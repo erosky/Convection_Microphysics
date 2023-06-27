@@ -1,0 +1,16 @@
+list timstamps of passes below cloud that are not in updraft
+compare the properies to the updrafts
+
+- Absolute Humidity
+- CCN
+- moist static energy
+- temperature
+
+RF01
+RF08, 2 and 5
+
+Divide up non-updraft time into 10 second segments
+look at variation within the segments? or just average values.
+
+
+

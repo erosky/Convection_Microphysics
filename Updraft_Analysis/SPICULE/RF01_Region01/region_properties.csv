@@ -1,0 +1,2 @@
+LatMin, LatMax, LonMin, LonMax, CloudBase_m, CloudBase_uncertainty, CloudBaseTemp, MixingRatioBase, WaterVaporBase, HeatCapacity, MoistStaticEnergy
+37.4120, 37.4822, -103.6368, -103.5332, 4500, 250, 7.9, 5.6775, 4.6645, 1016.0330, 56784.2643

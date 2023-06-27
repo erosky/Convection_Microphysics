@@ -1,0 +1,15 @@
+Number of study regions per flight
+
+RF01 -> 1
+RF02 -> 1 (in cloud updrafts only)
+RF03 -> 0 (no GNI)
+RF04 -> 2 (in cloud updrafts only)(minimal GNI)
+RF05 -> 1 (below cloud data is peculiar)(minimal GNI)
+RF06 -> some regions, but its kind of messy, and not isolated cells, may not be worthwhile (no GNI)
+RF07 -> 0
+RF08 -> 5
+RF09 -> 1 (very small shallow cloud, with small droplets as well)
+RF10 -> 1 (no holodec data)
+
+Total: 12 0r 13
+Total with belowcloud: 7

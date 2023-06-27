@@ -1,0 +1,33 @@
+Get CDP droplet distribution
+
+2 seconds on either side of updraft
+for a total of 4 seconds edge data
+
+for the full cloud pass, find the droplet size distribution and calculate the cutoff size for top 10% of largest droplets.
+How much LWC is contained in that top 10%
+
+define drizzle size.
+
+
+From CDP netcdf files,
+- calculate the cutoff size for 10% largest drops
+- plot concentration of large drops as a function of time and updraft velocity
+
+plot cdp concentrations with horizontal line where 10% largest cutoff is
+
+plot 10% cutoff size as a function of GNI
+
+plot pcasp and cdp together.
+start reconstruction of holodec segments.
+
+----
+identify below cloud segments for all regions?
+got through each cloud pass
+make a table to perform correlations
+each row is a cloud pass
+columns: avg LWC, max lwc, holodec 90% size, cdp 90% size, max updraft, avg updraft, 
+cloud base temp, ccn conc, pcasp 90% size, gni largest size, moist static energy, height above CB,
+
+for a constant lwc, the height above cloud base and moist static energy should be inversely related.
+ 
+

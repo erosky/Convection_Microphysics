@@ -1,0 +1,213 @@
+Big picture:
+
+1 - Find flight passes through adiabatic updrafts.
+2 - From the field data available, extract all the variables necessary to calculate moist static energy
+3 - And other thermodynamics in the cloud.
+4 - Study the microphysics happening in the cloud
+
+
+Total water vapor and liquid water in parcel 
+- Start with cloud regions with a below-cloud pass. Use that passes water vapor content as the total water.
+- If these clouds are following moist-adiabatic trends, then cloud regions without a cloud base pass can be assumed moist-adiabatic
+- and total water can be calculated from other variables.
+
+
+saturation vapor pressure
+- This can be calculated using the improved magnus equation and is a function of temperature only
+
+saturation mixing ratio
+- Is a function of pressure and saturation vapor pressure.
+- Temperature has an error of ~1 K in cloud
+
+If two clouds have the same moist static energy, then they are on the same moist-adiabat
+
+if two clouds have same LWC, then they have both released same amount of latent heat.
+rest of energy is distrubted across height above cloud base and temperature difference from cloud base
+if h is same, that will all be the same.
+if h1 < h2, then dT/dz of 1 is less than dT/dz of 2
+thus a larger height z will be needed to condense the same amount of water dw/dz
+
+
+We need a script to do initial data extraction
+then a script to add a new variable that was overlooked
+then a script to compute a new property and add it
+
+
+1 - Group cloud passes (spicule_group_updrafts.m)
+
+below cloud base
+in cloud 
+
+
+2 - Search netCDF (spicule_get_belowcloud_data.m, spicule_get_incloud_data.m)
+
+CDP
+CCN
+2DC
+mixing ratio
+relative humidity
+dewpoint
+absolute humidity
+vapor pressure
+king LWC
+Pressure
+altitude
+lat/lon
+vertical wind
+icing
+absolute temperature
+
+
+    CONCN                 
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue    = -32767
+                       units         = '#/cm3'
+                       long_name     = 'Condensation Nuclei (CN) Concentration'
+                       standard_name = 'atmosphere_number_content_of_aerosol_particles'
+                       actual_range  = [379.082794      51244.6289]
+                       Category      = 'Chemistry'
+                       DataQuality   = 'Good'
+                       Dependencies  = '6 CNTS FCNC PCN CNTEMP PSXC ATX'
+                       
+    CS200_LWOI            
+           Size:       30x1x16120
+           Dimensions: Vector30,sps1,Time
+           Datatype:   single
+           Attributes:
+                       _FillValue    = -32767
+                       units         = '#/cm3'
+                       long_name     = 'SPP-200 (PCASP) Concentration (per cell) - DMT'
+                       standard_name = 'atmosphere_number_content_of_aerosol_particles'
+                       actual_range  = [0      596.4216]
+                       Category      = 'PMS Probe'
+                       
+    CONCP_LWOI            
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue    = -32767
+                       units         = '#/cm3'
+                       long_name     = 'PCAS Concentration (all cells)'
+                       standard_name = 'atmosphere_number_content_of_aerosol_particles'
+                       actual_range  = [11.434112      6422.3154]
+                       Category      = 'PMS Probe'
+                       SerialNumber  = 'PCAS0904-004'
+                       DataQuality   = 'Good'
+                       Dependencies  = '1 CS200_LWOI'
+
+    PLWC2DCR_RWOO         
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue   = -32767
+                       units        = 'g m-3'
+                       long_name    = 'Fast 2DC Liquid Water Content, Round Particles'
+                       Category     = 'PMS Probe'
+                       SerialNumber = 'F2DC003'
+                       DataQuality  = 'Good'
+    PLWC2DCA_RWOO         
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue   = -32767
+                       units        = 'g m-3'
+                       long_name    = 'Fast 2DC Liquid Water Content, All Particles'
+                       Category     = 'PMS Probe'
+                       SerialNumber = 'F2DC003'
+                       DataQuality  = 'Good'
+    DBAR2DCR_RWOO         
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue   = -32767
+                       units        = 'um'
+                       long_name    = 'Fast 2DC Mean Particle Diameter, Round Particles'
+                       Category     = 'PMS Probe'
+                       SerialNumber = 'F2DC003'
+                       DataQuality  = 'Good'
+    DBAR2DCA_RWOO         
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue   = -32767
+                       units        = 'um'
+                       long_name    = 'Fast 2DC Mean Particle Diameter, All Particles'
+                       Category     = 'PMS Probe'
+                       SerialNumber = 'F2DC003'
+                       DataQuality  = 'Good'
+                       
+                       
+    CONC2DCA_RWOO         
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue   = -32767
+                       units        = '#/L'
+                       long_name    = 'Total Fast 2DC Concentration, All Particles'
+                       Category     = 'PMS Probe'
+                       SerialNumber = 'F2DC003'
+                       DataQuality  = 'Good'
+    CONC2DCR_RWOO         
+           Size:       16120x1
+           Dimensions: Time
+           Datatype:   single
+           Attributes:
+                       _FillValue   = -32767
+                       units        = '#/L'
+                       long_name    = 'Total Fast 2DC Concentration, Round Particles'
+                       Category     = 'PMS Probe'
+                       SerialNumber = 'F2DC003'
+                       DataQuality  = 'Good'
+
+
+3 - compute below cloud
+
+
+mixing ratio
+moist static energy
+CCN
+effective radius
+total concentration
+GNI
+IN
+
+
+4 - compute in cloud
+
+height above cloud base
+temperature difference from cloudbase
+change in saturation mixing ratio from cloudbase
+saturation vapor pressure
+saturation mixing ratio
+LWC and IWC
+moist static energy
+Droplet size distribution
+Effective radius
+total concentration
+
+
+Folder Structure:
+- SPICULE
+- RF08_Region01, RF08_Region02, ...
+- Below_Cloud, In_Cloud
+- Droplets, Aerosols, Thermodynamics
+
+
+
+
+IN CLOUD ONLY DATA SETS
+
+- Are aersol concentration the same in updrafts below cloud base and in the other nearby regions below the cloud?
+- If yes, we can take aerosol data from below cloud even if it's not in the updraft core.
+- Is humidity in updrafts below cloud base the same as in the other nearby regions below the cloud?
+- If yes, we can take humidity data from below cloud even if it's not in the updraft core.
+
