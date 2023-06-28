@@ -1,26 +1,26 @@
 # exclude netCDF files
-*.nc
+#*.nc
 
 # exclude video files
-*.mp4
+#*.mp4
 
 # exclude hist.mat files
-*hist.mat
+#*hist.mat
 
 # exclude .seq files
-*.seq
+#*.seq
 
 # exclude .png files
-*.png
+#*.png
 
 # exclude .jpg files
-*.jpg
+#*.jpg
 
 # exclude .gif files
-*.gif
+#*.gif
 
 # exclude .tar files
-*.tar*
+#*.tar*
 
 # exclude .zip files
-*.zip
+#*.zip
