@@ -183,6 +183,8 @@ IN
 
 4 - compute in cloud
 
+Holodec -> SPICULE/Tools/Holodec/make_quicklooks_allpasses.m and make_
+
 height above cloud base
 temperature difference from cloudbase
 change in saturation mixing ratio from cloudbase
