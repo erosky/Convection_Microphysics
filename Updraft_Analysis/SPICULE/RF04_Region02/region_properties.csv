@@ -1,2 +1,6 @@
-LatMin,LatMax,LonMin,LonMax,CloudBase_m,CloudBaseTemp
-35.0185,35.0798,-96.7739,-96.6953,1158,17.5
+LatMin, LatMax, LonMin, LonMax, CloudBase_m, CloudBaseTemp, MixingRatioBase, WaterVaporBase, HeatCapacity, MoistStaticEnergy
+35.0185, 35.0798, -96.7739, -96.6953, 1158, 17.5, 11.9, 12.5, 1027.35, 58204.4
+
+
+
+
