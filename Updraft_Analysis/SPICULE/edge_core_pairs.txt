@@ -1,0 +1,22 @@
+RF01_Region01
+
+Edge Pass - Core Pass
+Pass 1 - Pass 1
+Pass 3 - Pass 3
+Pass 4 - Pass 4
+Pass 6 - Pass 6
+Pass 7 - Pass 7
+
+RF04_Region02
+
+Pass 1, Pass 2 - Pass 1
+Pass 3 - Pass 2
+
+RF08_Region02
+
+Pass 2, Pass 3 - Pass 1
+Pass 4, Pass 5 - Pass 2
+Pass 6 - Pass 3
+Pass 7 - Pass 4
+
+
