@@ -1,11 +1,11 @@
-function [] = plot_two_pdfs(quicklookfile1, quicklookfile2, numberofbins, titlestring);
+function [] = plot_two_pdfs(quicklookfile1, quicklookfile2, numberofbins, titlestring, outputfolder);
 
 [Dcenters1, C1, err1] = pdf_test(quicklookfile1, numberofbins)
 [Dcenters2, C2, err2] = pdf_test(quicklookfile2, numberofbins)
 
 
 %Plot droplet size distribution in #/cc/um
-figure
+figure = fig
 plot(Dcenters1.*1000000, C1, 'LineWidth', 2, 'DisplayName','Core')
 hold on
 er = errorbar(Dcenters1.*1000000, C1, err1, "o", 'LineWidth', 1, 'Color', 'b',  'HandleVisibility','off');
@@ -18,3 +18,5 @@ set(gca,'YScale','log')
 xlabel('Diameter (microns)'), ylabel('Concentration (#/cc)')
 legend
 title(titlestring)
+
+saveas(fig, sprintf('%s/%s_curves.png', outputfolder, titlestring));

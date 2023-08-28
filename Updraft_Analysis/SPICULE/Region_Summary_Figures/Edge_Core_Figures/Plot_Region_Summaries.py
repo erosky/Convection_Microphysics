@@ -53,7 +53,7 @@ for folder in os.listdir(directory):
 		e_alts = []
 		e_temp = []
 		belowcloud = os.path.join(f, "BelowCloud")
-		for passfile in os.listdir(incloud):
+		for passfile in sorted(os.listdir(incloud)):
 			if "thermodynamics_" in passfile and "lock" not in passfile:
 				pass_csv = os.path.join(incloud, passfile)
 				passdata = pd.read_csv(pass_csv, skipinitialspace=True, sep=',', engine='python')
@@ -62,7 +62,7 @@ for folder in os.listdir(directory):
 				alts.append(passdata.loc[:,"Altitude"].values[:])
 				temp.append(np.average(passdata.loc[:,"Temperature"].values[:]))
 		if os.path.isdir(edgecloud):
-			for passfile in os.listdir(edgecloud):
+			for passfile in sorted(os.listdir(edgecloud)):
 				if "thermodynamics_" in passfile and "lock" not in passfile:
 					pass_csv = os.path.join(edgecloud, passfile)
 					passdata = pd.read_csv(pass_csv, skipinitialspace=True, sep=',', engine='python')
@@ -139,17 +139,21 @@ for i in range(len(regions)):
 	norm = matplotlib.colors.Normalize(vmin=minima, vmax=maxima, clip=True)
 	mapper = cm.ScalarMappable(norm=norm, cmap=cm.jet)
 	
-	for e in range(len(edge_lats[i])):
-		zline_e = edge_alts[i][e]
-		xline_e = edge_lons[i][e]
-		yline_e = edge_lats[i][e]
-		ax.plot3D(xline_e, yline_e, zline_e, color='m')
 	
 	for p in range(len(track_lats[i])):
 		zline = track_alts[i][p]
 		xline = track_lons[i][p]
 		yline = track_lats[i][p]
-		#ax.plot3D(xline, yline, zline, color=mapper.to_rgba(temps[i][p]))
+		ax.plot3D(xline, yline, zline, color=mapper.to_rgba(temps[i][p]))
+		ax.text(xline[0], yline[0], zline[0], str(p+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='k', fontsize='xx-small')
+		
+	for e in range(len(edge_lats[i])):
+		zline_e = edge_alts[i][e]
+		xline_e = edge_lons[i][e]
+		yline_e = edge_lats[i][e]
+		ax.plot3D(xline_e, yline_e, zline_e, color='m')
+		ax.text(xline_e[0], yline_e[0], zline_e[0], str(e+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='m', fontsize='xx-small')
+
 		
 		
 	fig.colorbar(mapper, label="Temperature(C)", shrink=0.5, pad=0.1)

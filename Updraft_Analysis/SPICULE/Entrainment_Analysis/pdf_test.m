@@ -13,7 +13,7 @@ N = [];
 
 % Find total sample volume of all holograms combined
 samples = length(quicklook.ans.counts)
-dy = 0.28; %cm
+dy = 2*0.28; %cm
 dx = 1.44; %cm
 dz = 13; %cm
 sample_volume = dy*dx*dz %cubic cm
