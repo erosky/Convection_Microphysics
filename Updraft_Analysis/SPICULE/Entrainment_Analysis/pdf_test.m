@@ -43,10 +43,10 @@ err = sqrt(particlesinbin)./(volume);
 
 
 %Plot droplet size distribution in #/cc/um
-figure
-semilogy(Dcenters.*1000000,C), 
-xlabel('Diameter (microns)'), ylabel('Concentration (#/cc/micron)')
-title('DSD from SPICULE Holodec')
+%figure
+%semilogy(Dcenters.*1000000,C), 
+%xlabel('Diameter (microns)'), ylabel('Concentration (#/cc/micron)')
+%title('DSD from SPICULE Holodec')
 
 % fig = figure(1);
 % %Concentration contour
