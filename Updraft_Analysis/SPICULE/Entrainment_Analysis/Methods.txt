@@ -1,0 +1,8 @@
+Extract thermodynamics info from the netCDF files.
+Calculate Moist static energy.
+Plot positions relative to adiabatic cores.
+
+Holodec:
+Neural Net
+Verify Large droplets
+

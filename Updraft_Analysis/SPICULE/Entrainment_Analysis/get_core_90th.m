@@ -3,7 +3,7 @@ function [percentile_LIST, large_avg_LIST, largest_LIST] = get_core_90th(region)
 % output list per cloudpass
 % holodec 90th percentile
 
-quicklook_path = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE';
+quicklook_path = '../';
 quicklooks = dir(fullfile(quicklook_path, region, 'holoquicklook_*.mat'));
 percentile_LIST = [];
 large_avg_LIST = [];

@@ -3,7 +3,7 @@ function [percentile_SIZE, large_avg_SIZE, largest_SIZE] = get_edge_90th(region,
 % output list per cloudpass
 % holodec 90th percentile
 
-quicklook_path = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE';
+quicklook_path = '../';
 quicklooks = dir(fullfile(quicklook_path, region, 'EdgeCloud', 'holoquicklook_*.mat'));
 
 quicklookfile = fullfile(quicklooks(pass_num).folder, quicklooks(pass_num).name);
