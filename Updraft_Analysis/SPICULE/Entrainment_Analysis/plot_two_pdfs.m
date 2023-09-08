@@ -14,7 +14,7 @@ plot(Dcenters2.*1000000, C2, 'LineWidth', 2, 'DisplayName','Edge')
 hold on
 er = errorbar(Dcenters2.*1000000, C2, err2, "o", 'LineWidth', 1, 'Color', '#EDB120',  'HandleVisibility','off');
 hold on
-set(gca,'YScale','log')
+set(gca,'YScale','log','XScale','log')
 xlabel('Diameter (microns)'), ylabel('Concentration (#/cc)')
 legend
 title(titlestring,  'interpreter', 'none')

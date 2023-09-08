@@ -22,7 +22,7 @@ for r=1 : height(timestamps)
    core_pass = timestamps{r,2}
    edge_pass = timestamps{r,1}
    
-   titlestring = region + "_" + "Edge" + edge_pass + "_Core" + core_pass;
+   titlestring = region + "_loglog_" + "Edge" + edge_pass + "_Core" + core_pass;
    plot_two_pdfs(fullfile(core_holo(core_pass).folder, core_holo(core_pass).name), fullfile(edge_holo(edge_pass).folder, edge_holo(edge_pass).name), 10, titlestring, output_folder);
    
    

@@ -13,6 +13,8 @@ timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 edge_thermodynamics = dir(fullfile(region_folder, region, 'EdgeCloud', 'thermodynamics_*.csv'));
 core_thermodynamics = dir(fullfile(region_folder, region, 'InCloud', 'thermodynamics_*.csv'));
 
+core_summaryfile = readtable(fullfile(region_folder, region, 'InCloud', 'incloud_summary.csv'));
+
 output_path = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE/Entrainment_Analysis';
 output_folder = fullfile(output_path, region);
 
@@ -43,6 +45,9 @@ edge_vwind_avg = [];
 edge_vwind_max = [];
 edge_vwind_min = [];
 
+Height_abvCB = [];
+Pass_Temperature = [];
+
 
 for r=1 : height(timestamps)
    % get droplet size data
@@ -57,6 +62,9 @@ for r=1 : height(timestamps)
    edge_large_avg = [edge_large_avg; edge_large_avg_pass];
    edge_largest = [edge_largest; edge_largest_pass];
    
+   % get cloudpass data
+   Height_abvCB = [Height_abvCB; core_summaryfile.HeightAboveCB(core_pass)];
+   Pass_Temperature = [Pass_Temperature; core_summaryfile.AverageTemp(core_pass)];
    
    % Thermodynamics
     edge_thermofile = readtable(fullfile(edge_thermodynamics(edge_pass).folder, edge_thermodynamics(edge_pass).name));
@@ -167,7 +175,8 @@ for r=1 : height(timestamps)
    
 end
 
-
+output.HeightAboveCB = Height_abvCB;
+output.Temperature = Pass_Temperature
 output.Core_90th = core_90th;
 output.Core_LargeAvgDiam = core_large_avg;
 output.Core_Largest = core_largest;

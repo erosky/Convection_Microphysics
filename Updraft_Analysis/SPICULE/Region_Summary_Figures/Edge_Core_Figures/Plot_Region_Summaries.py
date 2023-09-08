@@ -110,6 +110,7 @@ for i in range(len(regions)):
 	flightnum = regions[i].split("_")
 
 	x = np.linspace(lonmins[i],lonmaxs[i], 30)
+	print(latmins[i],latmaxs[i])
 	y = np.linspace(latmins[i],latmaxs[i], 30)
 	X, Y = np.meshgrid(x, y)
 	Z =  cloudbases[i]*np.ones(X.shape)
