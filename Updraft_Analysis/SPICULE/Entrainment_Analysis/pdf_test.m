@@ -1,9 +1,9 @@
 function [Dcenters, C, err] = pdf_test(quicklookfile, numberofbins);
 % return bin centers and number of particles in the bin
-
+quicklookfile
 quicklook = load(quicklookfile); % loaded structure
-diameters = quicklook.ans.eqDiam;
-totalN = length(diameters);
+diameters = quicklook.ans.eqDiam
+totalN = length(diameters)
 
 
 numbins = numberofbins;
