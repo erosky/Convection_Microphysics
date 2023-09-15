@@ -104,17 +104,6 @@ for p = 1 : size(core_timestamps)
      core_output = [core_output;pass];
 
     
-%          % Save cloudpass data
-%     output = table('Size', [length(time2(timeIndexes)) 0]);
-%     output.Time = time2(timeIndexes);
-%     output.king_LWC = lwc_king(timeIndexes);
-%     output.cdp_LWC_whole = lwc_cdp(timeIndexes);
-%     output.cdp_LWC = transpose(cdp_LWC);
-
-
-%      date_txt = string(startcore, 'yyyy-MM-dd-HH-mm-ss') + '_' + string(endcore, 'yyyy-MM-dd-HH-mm-ss');
-%      outputname = LWC + "_" + flightnumber + "_" + date_txt;
-%      writetable(output, sprintf('%s/%s.png', core_folder, outputname), 'WriteMode','overwrite');
      
 end
 
@@ -137,8 +126,86 @@ legend('Location', 'northeastoutside')
 % core_filename = fullfile(folder, 'LWC_values.csv');
 % writetable(core_output, sprintf('%s/%s.png', core_folder, core_filename),'WriteMode','overwrite');
 
+
+
 % Go through edge passes
 
+edge_output = table('Size',[0 6],...
+                        'VariableTypes',{'datetime','datetime','double','double','double','double'},...
+                        'VariableNames', ["StartTime", "EndTime", "LWC_cdp", "cdp_LWC_whole", "LWC_king", "LWC_holo"]);
+
+for p = 1 : size(edge_timestamps)
+
+                    
+    starttime = edge_timestamps.StartTime(p);
+    endtime = edge_timestamps.EndTime(p);
+    timeIndexes = (time2 <= endtime) & (time2 >= starttime);
+   
+    
+    % Calculate CDP LWC larger than size threshold of holodec
+    %    units         = '#/cm3'
+    %    CellSizeUnits = 'micrometers'
+    %    CellSizeNote  = 'CellSizes are upper bin limits as diameter.'
+    
+    % find bin size that is greater or equal to the size cuttoff (12um)
+    bin_cutoff = find(cdp_edges >= size_threshold, 1);
+    % this will be the lower bound of cdp bins
+    bound_edges = cdp_edges(bin_cutoff:end);
+    cdp_diameters = [];
+    for b = 1 : length(bound_edges)-1
+     center = (bound_edges(b) + bound_edges(b+1))/2;
+     cdp_diameters = [cdp_diameters; center];
+    end
+    
+    cdp_concentrations = conc2(bin_cutoff:end,timeIndexes);
+    
+    % calculate LWC in the cdp bound bins
+    volume_array = (1/6)*pi*(1.0E-6*cdp_diameters).^3;  %cubic meters (volume of one water droplet in this bin)
+    per_droplet_mass_array = water_density*volume_array; %g (mass of one water droplet in this bin)
+    mass_array = (per_droplet_mass_array.*cdp_concentrations)*10^6; % g/m3
+    cdp_LWC = sum(mass_array,1); % g/m3
+    
+    
+    % Calculate LWC in holodec diameters larger than lower size threshold
+    quicklook = load(fullfile(edge_holo(p).folder, edge_holo(p).name));
+    % Find total sample volume of all holograms combined
+    N_holograms = length(quicklook.ans.counts);
+    dy = 2*0.28; %cm
+    dx = 1.44; %cm
+    dz = 13; %cm
+    sample_volume = dy*dx*dz; %cubic cm
+    holo_volume = sample_volume*N_holograms; %cubic cm
+    
+    
+    holo_diameters = quicklook.ans.majsiz; %m
+    diameterIndexes = holo_diameters*1000000 >= 12;
+    holo_diameters = holo_diameters(diameterIndexes)
+    
+    holo_volume_array = (1/6)*pi*holo_diameters.^3;  %cubic meters (volume of each water droplet)
+    holo_mass_array = water_density*holo_volume_array; % g
+    holo_total_mass = sum(holo_mass_array)
+    holo_LWC = (holo_total_mass/holo_volume)*10^6 % g/m3
+    
+   
+     pass = {starttime, endtime, nanmean(cdp_LWC), nanmean(lwc_cdp(timeIndexes)), nanmean(lwc_king(timeIndexes)),holo_LWC};
+     edge_output = [edge_output;pass];
+
+    
+     
+end
+edge_output
+
+figure
+scatter(edge_output.LWC_king, edge_output.LWC_holo, "filled", 'DisplayName', 'King vs Holodec')
+hold on
+scatter(edge_output.LWC_king, edge_output.LWC_cdp, "filled", 'DisplayName', 'King vs CDP')
+hold on
+scatter(edge_output.LWC_king, edge_output.cdp_LWC_whole, 'DisplayName', 'King vs full CDP')
+hold on
+plot(xlim,ylim,'-b')
+axis equal
+xlabel('King probe LWC'), ylabel('LWC for >12um')
+legend('Location', 'northeastoutside')
 
 
 end
