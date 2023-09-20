@@ -1,0 +1,33 @@
+function out = region_plot(region, flightnumber)
+
+% go through all edge and cloud pass holoquicklooks
+% calculate LWC in each timestep
+% use holoquicklooks to set time range
+% plot the cdp, king, holo LWC across entire time range
+% plot vertical wind speed as well
+
+nc_path = '../../../../SPICULE/Data/LRT_Aircraft_2.1';
+flight_nc = dir(fullfile(nc_path, sprintf('%s.*.nc', flightnumber)));
+ncfile = fullfile(nc_path, flight_nc.name);
+
+quicklook_path = '../';
+quicklooklist = [dir(fullfile(quicklook_path, region, 'holoquicklook_*.mat')); dir(fullfile(quicklook_path, region, 'EdgeCloud', 'holoquicklook_*.mat'))];
+
+holotimes = [];
+holo_LWC = [];
+
+for q=1 : length(quicklooklist)
+    quicklookfile = fullfile(quicklooklist(q).folder, quicklooklist(q).name);
+    [times, LWC] = holoquicklook_to_LWC(quicklookfile);
+    holotimes = [holotimes; times];
+    holo_LWC = [holo_LWC; LWC];
+end
+
+holotimes = datetime(holotimes,'ConvertFrom','datenum', 'Format', 'yyyy-MM-dd HH:mm:ss.SSS');
+
+starttime = min(holotimes)+
+endtime = max(holotimes)
+
+
+
+

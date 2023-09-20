@@ -7,14 +7,14 @@ function out = core_edge_comparison_curves(region)
 
 % Plot a three panel figure per pair in the Region folder
 
-region_folder = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE';
+region_folder = '../../';
 timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 
-edge_holo = dir(fullfile(region_folder, region, 'EdgeCloud', 'holoquicklook_*.mat'));
-core_holo = dir(fullfile(region_folder, region, 'holoquicklook_*.mat'));
+edge_holo = dir(fullfile(region_folder, region, 'EdgeCloud', 'cdp_*.nc'));
+core_holo = dir(fullfile(region_folder, region, 'InCloud', 'cdp_*.nc'));
 
-output_path = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE/Entrainment_Analysis';
-output_folder = fullfile(output_path, region);
+output_path = '../';
+output_folder = fullfile(output_path, region, 'CDP');
 
 
 for r=1 : height(timestamps)
@@ -23,7 +23,7 @@ for r=1 : height(timestamps)
    edge_pass = timestamps{r,1}
    
    titlestring = region + "_massCDF" + "Edge" + edge_pass + "_Core" + core_pass;
-   plot_two_cdfs(fullfile(core_holo(core_pass).folder, core_holo(core_pass).name), fullfile(edge_holo(edge_pass).folder, edge_holo(edge_pass).name), 10, titlestring, output_folder);
+   plot_two_cdfs(fullfile(core_holo(core_pass).folder, core_holo(core_pass).name), fullfile(edge_holo(edge_pass).folder, edge_holo(edge_pass).name), titlestring, output_folder);
    
    
 end

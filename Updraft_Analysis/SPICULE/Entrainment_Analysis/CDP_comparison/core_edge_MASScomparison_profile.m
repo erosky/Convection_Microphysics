@@ -8,7 +8,7 @@ function out = core_edge_MASScomparison_profile()
 Directory = "./";
 Regions = dir(fullfile(Directory, 'RF*_Region*'));
 
-output_folder = './';
+output_folder = './CDP_comparison';
 
 full_data = [];
 

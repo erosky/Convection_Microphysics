@@ -5,7 +5,7 @@ function out = core_edge_comparison_profile()
 % x-axis is edge 90th / core 90th
 % data points are colored by the temperature of the cloud pass
 
-Directory = "./";
+Directory = "../";
 Regions = dir(fullfile(Directory, 'RF*_Region*'));
 
 output_folder = './';
@@ -15,7 +15,7 @@ full_data = [];
 for f = 1:length(Regions)
     % Open up the cloudpass file
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
-    data = readtable(fullfile(region_folder, 'core_edge_comparison_table.csv'));
+    data = readtable(fullfile(region_folder, 'CDP', 'core_edge_comparison_table.csv'));
     
     fig = figure(f);
     scatter(data.Edge_LargeAvgDiam./data.Core_LargeAvgDiam, data.HeightAboveCB, 100, data.Temperature, 'filled');

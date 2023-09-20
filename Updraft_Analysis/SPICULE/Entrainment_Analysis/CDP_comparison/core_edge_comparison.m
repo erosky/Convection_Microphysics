@@ -7,7 +7,7 @@ function out = core_edge_comparison(region)
 
 % Plot a three panel figure per pair in the Region folder
 
-region_folder = '../';
+region_folder = '../../';
 timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 
 edge_thermodynamics = dir(fullfile(region_folder, region, 'EdgeCloud', 'thermodynamics_*.csv'));
@@ -15,8 +15,8 @@ core_thermodynamics = dir(fullfile(region_folder, region, 'InCloud', 'thermodyna
 
 core_summaryfile = readtable(fullfile(region_folder, region, 'InCloud', 'incloud_summary.csv'));
 
-output_path = './';
-output_folder = fullfile(output_path, region);
+output_path = '../';
+output_folder = fullfile(output_path, region, 'CDP');
 
 % rows are core-edge pairs, columns are data
 output = timestamps;
@@ -106,7 +106,7 @@ for r=1 : height(timestamps)
     % Plot edge
     plot(2, edge_large_avg_pass, 'square', 'MarkerSize', 10, 'HandleVisibility','off', 'MarkerEdgeColor','m');
     hold on
-    plot(2, edge_largest_pass, '^', 'MarkerSize', 10, 'HandleVisibility','off', 'MarkerEdgeColor','m');
+%     plot(2, edge_largest_pass, '^', 'MarkerSize', 10, 'HandleVisibility','off', 'MarkerEdgeColor','m');
     % Set up axes.
     xlim([0.5, 2.5]);
     ylim([core_90th_pass-5, core_largest_list(core_pass)+15]);
