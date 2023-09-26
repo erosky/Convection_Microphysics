@@ -22,7 +22,7 @@ output_folder = fullfile(output_path, region);
 output = timestamps;
 
 % get core data
-[core_90th_list, core_large_avg_list, core_largest_list] = get_core_mass90th(region)
+[core_90th_list, core_large_avg_list, core_largest_list] = get_core_mass90th(region);
 
 core_90th = [];
 core_large_avg = [];
@@ -54,7 +54,7 @@ for r=1 : height(timestamps)
    core_pass = timestamps{r,2}
    edge_pass = timestamps{r,1}
    core_90th_pass = core_90th_list(core_pass);
-   [edge_90th_pass, edge_large_avg_pass, edge_largest_pass] = get_edge_mass90th(region, edge_pass, core_90th_pass);
+   [edge_90th_pass, edge_large_avg_pass, edge_largest_pass] = get_edge_mass90th(region, edge_pass, core_90th_pass)
    core_90th = [core_90th; core_90th_pass];
    core_large_avg = [core_large_avg; core_large_avg_list(core_pass)];
    core_largest = [core_largest; core_largest_list(core_pass)];
@@ -175,6 +175,7 @@ for r=1 : height(timestamps)
    
 end
 
+
 output.HeightAboveCB = Height_abvCB;
 output.Temperature = Pass_Temperature
 output.Core_90th = core_90th;
@@ -183,9 +184,10 @@ output.Core_Largest = core_largest;
 output.Edge_90th = edge_90th;
 output.Edge_LargeAvgDiam = edge_large_avg;
 output.Edge_Largest = edge_largest;
+output.Edge90_Core90_ratio = edge_90th./core_90th;
 
 output
-writetable(output, fullfile(output_folder, 'massdiameter_comparison_table.csv'));
+writetable(output, fullfile(output_folder, 'massdiameter90_comparison_table.csv'));
 
 
 

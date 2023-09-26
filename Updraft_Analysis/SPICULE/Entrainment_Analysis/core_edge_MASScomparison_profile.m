@@ -15,13 +15,14 @@ full_data = [];
 for f = 1:length(Regions)
     % Open up the cloudpass file
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
-    data = readtable(fullfile(region_folder, 'massdiameter_comparison_table.csv'));
+    data = readtable(fullfile(region_folder, 'massdiameter90_comparison_table.csv'));
     
     fig = figure(1);
     scatter(data.Edge_90th./data.Core_90th, data.HeightAboveCB, 50, 'filled', 'DisplayName', Regions(f).name);
     hold on
     ylabel('Height above cloud base (m)');
-    xlabel('Edge/Core 95th percentile droplet mass diameter ratio');
+    xlim([0.8 1.2]);
+    xlabel('Edge/Core 90th percentile droplet mass diameter ratio');
     grid on
     legend('Interpreter', 'none', 'Location', 'northeastoutside');
     %h = colorbar;
@@ -32,7 +33,7 @@ for f = 1:length(Regions)
 end
 
 f = gcf;
-exportgraphics(f, 'mass_diameter_95th_profiles.png', 'Resolution',300);
+exportgraphics(f, 'mass_diameter_90th_profiles.png', 'Resolution',300);
 
 ratio_data = full_data.Edge_90th./full_data.Core_90th;
 avg_diameter_data = full_data.Edge_LargeAvgDiam./full_data.Core_LargeAvgDiam;

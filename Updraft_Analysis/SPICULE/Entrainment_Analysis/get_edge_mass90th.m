@@ -92,7 +92,7 @@ for p = 1:length(bins)
     c = sum(mass_array(1:p));
     mass_CDF = [mass_CDF; c]; 
 end
-holo_P = find( mass_CDF./mass_sum >= 0.95, 1 );
+holo_P = find( mass_CDF./mass_sum >= 0.90, 1 );
 percentile_SIZE = bins(holo_P);
 
 % Get average size larger than 90th

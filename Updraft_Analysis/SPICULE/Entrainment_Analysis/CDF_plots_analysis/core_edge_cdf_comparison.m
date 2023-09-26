@@ -95,6 +95,7 @@ output.HeightAboveCB = Height_abvCB;
 output.Temperature = Pass_Temperature
 output.Core_Dref = core_Dref;
 output.Edge_PDref = edge_PDref;
+output.EdgeP_CoreP_ratio = (1-edge_PDref)./0.10;
 
 
 output

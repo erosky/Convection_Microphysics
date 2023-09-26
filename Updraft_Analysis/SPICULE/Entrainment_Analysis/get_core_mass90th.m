@@ -97,7 +97,7 @@ for q=1 : length(quicklooks)
         c = sum(mass_array(1:p));
         mass_CDF = [mass_CDF; c]; 
     end
-    holo_P = find( mass_CDF./mass_sum >= 0.95, 1 );
+    holo_P = find( mass_CDF./mass_sum >= 0.90, 1 );
     percentile_SIZE = bins(holo_P);
     percentile_LIST = [percentile_LIST; percentile_SIZE];
     mass_CDF_LIST = [mass_CDF_LIST; mass_CDF];

@@ -1,4 +1,4 @@
-function out = region_plot(region, flightnumber)
+function [starttime, endtime] = region_plot(region, flightnumber)
 
 % go through all edge and cloud pass holoquicklooks
 % calculate LWC in each timestep
