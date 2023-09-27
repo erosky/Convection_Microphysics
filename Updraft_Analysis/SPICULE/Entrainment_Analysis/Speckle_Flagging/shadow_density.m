@@ -19,15 +19,15 @@ Z = 15 %cm
 X = 0.8 %cm
 Y = 1.2 %cm
 
-region_folder = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE';
+region_folder = '../../';
 timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 
-edge_thermodynamics = dir(fullfile(region_folder, region, 'EdgeCloud', 'thermodynamics_*.csv'));
-core_thermodynamics = dir(fullfile(region_folder, region, 'InCloud', 'thermodynamics_*.csv'));
+edge_cdp = dir(fullfile(region_folder, region, 'EdgeCloud', 'cdp_*.nc'));
+core_cdp = dir(fullfile(region_folder, region, 'InCloud', 'cdp_*.nc'));
 
 core_summaryfile = readtable(fullfile(region_folder, region, 'InCloud', 'incloud_summary.csv'));
 
-output_path = '/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE/Entrainment_Analysis';
+output_path = '../';
 output_folder = fullfile(output_path, region);
 
 % rows are core-edge pairs, columns are data
@@ -51,12 +51,12 @@ for r=1 : height(timestamps)
    Pass_Temperature = [Pass_Temperature; core_summaryfile.AverageTemp(core_pass)];
    
    % Thermodynamics
-   edge_thermofile = readtable(fullfile(edge_thermodynamics(edge_pass).folder, edge_thermodynamics(edge_pass).name));
-   core_thermofile = readtable(fullfile(core_thermodynamics(core_pass).folder, core_thermodynamics(core_pass).name));
-    N_edge = mean(edge_thermofile.TotalConc_cdp_cm3,"omitnan");
-    N_core = mean(core_thermofile.TotalConc_cdp_cm3,"omitnan");
-    R_edge = mean(edge_thermofile.EffRadius_cdp,"omitnan");
-    R_core = mean(core_thermofile.EffRadius_cdp,"omitnan");
+   edge_cdpfile = fullfile(edge_cdp(edge_pass).folder, edge_cdp(edge_pass).name);
+   core_cdpfile = fullfile(core_cdp(core_pass).folder, core_cdp(core_pass).name);
+    N_edge = mean(ncread(edge_cdpfile,'TotalConc'),"omitnan");
+    N_core = mean(ncread(core_cdpfile,'TotalConc'),"omitnan");
+    R_edge = mean(ncread(edge_cdpfile,'MeanDiameter'),"omitnan")/2;
+    R_core = mean(ncread(core_cdpfile,'MeanDiameter'),"omitnan")/2;
     
 
     % Shadow density = A_p / A_h
@@ -73,7 +73,7 @@ output.Core_ShadowDensity = core_ShadowDensity;
 output.Edge_ShadowDensity = edge_ShadowDensity;
 
 output
-writetable(output, fullfile(output_folder, 'ShadowDensityTable.csv'));
+writetable(output, fullfile(output_folder, 'ShadowDensityTable_MeanDiameter.csv'));
 
 
 

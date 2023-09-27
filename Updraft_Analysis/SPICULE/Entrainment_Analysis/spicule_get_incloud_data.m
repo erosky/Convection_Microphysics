@@ -1,8 +1,8 @@
  function out = spicule_get_incloud_data(region, flightnumber)
     % Prepare all the data for below cloudbase
     
-    directory = fullfile('/data/emrosky-sim/Field_Projects/Convection_Microphysics/Updraft_Analysis/SPICULE/',region);
-    nc_path = '/data/emrosky-sim/Field_Projects/SPICULE/Data/LRT_Aircraft_2.1';
+    directory = fullfile('../',region);
+    nc_path = '../../../../SPICULE/Data/LRT_Aircraft_2.1';
     flight_nc = dir(fullfile(nc_path, sprintf('%s.*.nc', flightnumber)));
     ncfile = fullfile(nc_path, flight_nc.name);
     
@@ -42,6 +42,7 @@
     effrac_2dc = ncread(ncfile,'REFF2DCR_RWOO'); % Fast 2DC Effective Radius, Round Particles (um)
     totalconc_2dc = ncread(ncfile,'CONC2DCR_RWOO'); % Total Fast 2DC Concentration, Round Particles' (#/L)
     totalconc_cdp = ncread(ncfile,'CONCD_LWOO'); % CDP Concentration (all cells) (#/cm3)
+    meandiam_cdp = ncread(ncfile,'DBARD_LWOO'); % CDP Mean diameter (um)
     icing = ncread(ncfile,'RICE'); % Raw Icing-Rate Indicator
     
     
