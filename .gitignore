@@ -26,4 +26,4 @@
 #*.zip
 
 # exclude big reconstruction files
-*/NCAR_Reconstruction/*.nc
+*_HOLODEC.nc
