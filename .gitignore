@@ -24,3 +24,6 @@
 
 # exclude .zip files
 #*.zip
+
+# exclude big reconstruction files
+*/NCAR_Reconstruction/*.nc

@@ -11,7 +11,7 @@ lonmins = []
 lonmaxs = []
 
 # Read all region properties
-directory = "/home/simulations/Field_Projects/Updraft_Analysis/SPICULE"
+directory = "../"
 for folder in os.listdir(directory):
 	f = os.path.join(directory, folder)
 	# checking if it is a file
@@ -26,6 +26,7 @@ for folder in os.listdir(directory):
 
 
 # Read GNI data locations
+'''
 GNI_dir = "/home/simulations/Field_Projects/SPICULE/Data/GNI"
 GNI_metadata = os.path.join(GNI_dir, "metadata_mass.csv")
 gni_data = pd.read_csv(GNI_metadata, skipinitialspace=True)
@@ -33,12 +34,14 @@ gni_lons = gni_data.loc[:,"Slide exposure average longitude (deg.decimal)"].valu
 gni_lats = gni_data.loc[:,"Slide exposure average latitude (deg.decimal)"].values[:]
 gni_mass = gni_data.loc[:,"NaCl equivalent mass loading (microg/m**3)"].values[:]
 gni_flight = gni_data.loc[:,"Flight number"].values[:]
+'''
 
 
 
 
-map = Basemap(projection='merc', llcrnrlon=-108.00, llcrnrlat=31.00, urcrnrlon=-84.00, urcrnrlat=47.00, resolution=None)
+map = Basemap(projection='merc', llcrnrlon=-105.00, llcrnrlat=32.70, urcrnrlon=-89.00, urcrnrlat=46.00, resolution=None)
 map.bluemarble(scale=1.0)
+map.drawmapboundary(color='green', linewidth=1.5, fill_color=None, zorder=None, ax=None)
 #map.shadedrelief()
 #map.etopo()
 
@@ -49,7 +52,6 @@ map.drawcountries()
 map.drawstates(color='0.5')
 '''
 
-
 for i in range(len(regions)):
 	flightnum = regions[i].split("_")
 	
@@ -58,9 +60,9 @@ for i in range(len(regions)):
 	x3,y3 = map(lonmaxs[i],latmaxs[i])
 	x4,y4 = map(lonmaxs[i],latmins[i])
 
-	poly = Polygon([(x1,y1),(x2,y2),(x3,y3),(x4,y4)],facecolor='None',edgecolor='green',linewidth=1.5)
+	poly = Polygon([(x1,y1),(x2,y2),(x3,y3),(x4,y4)],facecolor='None',edgecolor='pink',linewidth=1.25)
 	plt.gca().add_patch(poly)
-	plt.annotate(flightnum[0]+" "+flightnum[1], xy=(x4,y4), xytext=(x4+10000,y4-50000), fontsize=8, color='w')
+	plt.annotate(flightnum[0]+" "+flightnum[1], xy=(x4,y4), xytext=(x4+10000,y4-50000), fontsize=7.5, color='w')
 	
 	'''
 	for j in range(len(gni_flight)):
@@ -69,4 +71,4 @@ for i in range(len(regions)):
 			map.scatter(x, y, marker='o',color='m', s=10*gni_mass[j])
 	'''
 
-plt.savefig('mapregions.png', dpi=1000)
+plt.savefig('mapregions.png', dpi=1000, bbox_inches='tight')

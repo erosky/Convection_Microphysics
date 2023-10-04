@@ -1,5 +1,5 @@
-LatMin, LatMax, LonMin, LonMax, CloudBase_m, CloudBaseTemp, MixingRatioBase, WaterVaporBase, HeatCapacity, MoistStaticEnergy
-39.8999, 40.0807, -95.1849, -94.9872, 1620, 19.7476, 14.9229, 14.44506, 1032.8596, 73464.9930
+LatMin, LatMax, LonMin, LonMax, CloudBase_m, CloudBaseTemp, MixingRatioBase, WaterVaporBase, HeatCapacity, MoistStaticEnergy, Date
+39.8999, 40.0807, -95.1849, -94.9872, 1620, 19.7476, 14.9229, 14.44506, 1032.8596, 73464.9930, June 20
 
 
 

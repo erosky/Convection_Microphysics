@@ -1,0 +1,62 @@
+function [timeseries, D_timeseries, LWC] = holoNC_to_LWC(holo_nc, starttime, endtime, time_ref, size_cutoff)
+
+water_density = 0.997E6 ; %g/m^3
+
+holotimes = ncread(holo_nc,'particletime');
+diameters = ncread(holo_nc,'d');
+totalN = length(diameters);
+
+OFFSET = -seconds(0.0);
+holotimes = datetime(str2double(time_ref{3}),str2double(time_ref{1}),str2double(time_ref{2})) + seconds(holotimes(:,1)) + OFFSET;
+timeIndexes = (holotimes <= endtime) & (holotimes >= starttime);
+
+holotimes = holotimes(timeIndexes);
+diameters = diameters(timeIndexes);
+
+% Find total sample volume of all holograms combined
+dy = 1.0; %cm ***NEEDS TO BE CHECKED
+dx = 1.44; %cm
+dz = 13; %cm
+sample_volume = dy*dx*dz; %cubic cm
+
+
+% Group timeseries by unique timestamps
+ timestamps = unique(holotimes);
+ N_holo = length(timestamps);
+ 
+ [tf,loc] = ismember(holotimes,unique(holotimes));
+ for ni = 1:max(loc)
+     D_timeseries{ni} = diameters(loc==ni);
+ end
+ 
+% make LWC timeseries
+LWC = [];
+for t = 1:N_holo
+    Diams = cell2mat(D_timeseries(t)); 
+    cutIndexes = (Diams >= size_cutoff);
+    Diams = Diams(cutIndexes);
+    Vol = (1/6)*pi*Diams.^3;  %cubic meters (volume of each water droplet)
+end
+
+
+
+% 
+% for n=1 : N_holograms
+%     h = index_search(n);
+%     totalN = quicklook.ans.counts(h);
+%     indexes = (quicklook.ans.holonum == h);
+%     h_diameters = diameters(indexes);
+%     holo_volume_array = (1/6)*pi*h_diameters.^3;  %cubic meters (volume of each water droplet)
+%     holo_mass_array = water_density*holo_volume_array; % g
+%     holo_total_mass = sum(holo_mass_array);
+%     holo_LWC = (holo_total_mass/sample_volume)*10^6; % g/m3
+%     LWC = [LWC; holo_LWC];
+% 
+% end
+
+end
+
+
+
+
+
