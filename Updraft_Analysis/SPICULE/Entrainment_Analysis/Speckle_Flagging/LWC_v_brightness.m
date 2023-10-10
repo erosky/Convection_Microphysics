@@ -22,6 +22,8 @@ for f = 1:length(Regions)
     shadow_density{f} = [];
     holo_brightness{f} = [];
     LWC_difference{f} = [];
+    LWC_cdp{f} = [];
+    LWC_holodec{f} = [];
     
     % Open up the cloudpass file
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
@@ -86,7 +88,9 @@ for f = 1:length(Regions)
                     
               shadow_density{f} = [shadow_density{f}; shadow];
               holo_brightness{f} = [holo_brightness{f}; b_1Hz];
-              LWC_difference{f} = [LWC_difference{f}; cdp_LWC - holo_LWC];
+              LWC_difference{f} = [LWC_difference{f}; cdp_LWC-holo_LWC];
+              LWC_cdp{f} = [LWC_cdp{f}; cdp_LWC];
+              LWC_holodec{f} = [LWC_holodec{f}; holo_LWC];
              
     end        
 
@@ -98,8 +102,13 @@ datamarkers = ["hexagram", "v", "o", "square"];
     fig = figure(1);
 
     for R = 1:length(Regions)
-    scatter(cell2mat(holo_brightness(R)), cell2mat(LWC_difference(R)), 50, "filled", 'DisplayName', Regions(R).name);
+    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_difference(R)), 50, "filled", "b", 'DisplayName', Regions(R).name);
     hold on
+    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_cdp(R)), 50, "filled", "g", 'DisplayName', Regions(R).name);
+    hold on
+    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_holodec(R)), 50, "filled", "r", 'DisplayName', Regions(R).name);
+    hold on
+    
     end
 
     
@@ -107,7 +116,7 @@ datamarkers = ["hexagram", "v", "o", "square"];
     ylabel('Difference between Hologram LWC and CDP LWC (NOT CORRECTED FOR SIZE RANGE)');
     xlabel('Hologram brightness');
     grid on
-    legend()
+    legend('Interpreter', 'none')
 
     fig2 = figure(2);
     
