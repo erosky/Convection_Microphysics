@@ -14,7 +14,7 @@ year = date_ref{2}(1:4)
 month = date_ref{2}(5:6)
 day = date_ref{2}(7:8)
 
-OFFSET = -seconds(1.0);
+OFFSET = -seconds(0.0);
 holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1)) + OFFSET;
 coreIndexes = (holotimes >= corestart) & (holotimes <= coreend);
 edgeIndexes = (holotimes >= edgestart) & (holotimes <= edgeend);
