@@ -1,6 +1,5 @@
 function [region, shadow_density, holo_brightness] = LWC_v_brightness()
 
-water_density = 0.997E6 ; %g/m^3
 
 % go through all core regions
 % compare average shadow density in pass with average hologram brighness
@@ -62,16 +61,16 @@ for f = 1:length(Regions)
             N = ncread(core_cdpfile,'TotalConc');
             R = ncread(core_cdpfile,'MeanDiameter')/2;
             
-            D_cdp = ncread(core_cdpfile, 'bins');
+                        D_cdp = ncread(core_cdpfile, 'bins');
             cutoff = find(D_cdp >= 12, 1);
-            D_cdp = D_cdp(cutoff:end)
+            D_cdp = D_cdp(cutoff:end);
    
             cdp_contours = transpose(ncread(core_cdpfile, 'PSD'));
             cdp_contours = cdp_contours(cutoff:end,:);
             cdp_conc = sum(cdp_contours); % droplets per m3
             cdp_LWC = [];
             size(cdp_contours,2)
-            cdp_dropmass = [];
+            cdp_dropmass = []
             for d = 1 : size(D_cdp)
                 D_center = D_cdp(d)*10^-6; % meters
                 D_volume = (1/6)*pi*(D_center)^3;  % cubic meters (volume of each water droplet)
@@ -79,9 +78,8 @@ for f = 1:length(Regions)
                 cdp_dropmass = [cdp_dropmass; D_Mass];
             end
                        
-            cdp_perLWC = cdp_contours.*cdp_dropmass; % mass per bin g/m3/um
-            cdp_LWC = transpose(sum(cdp_perLWC)*10^6)  % g/m3
-            size(cdp_LWC)
+            cdp_perLWC = cdp_contours.*cdp_dropmass; % mass per bin g/cm3/um
+            cdp_LWC = sum(cdp_perLWC) 
             %cdp_LWC = ncread(core_cdpfile,'LWC');
             
             shadow = pi*N.*((R*10^(-4)).^2)*15;
@@ -93,7 +91,6 @@ for f = 1:length(Regions)
              holoIndexes = (holotime <= endtime) & (holotime >= starttime);
              
              holo_LWC = holo_region_LWC(holoIndexes);
-             size(holo_LWC)
              
               t = time(timeIndexes);
               b = brightness(timeIndexes);
@@ -147,7 +144,7 @@ datamarkers = ["hexagram", "v", "o", "square"];
     end
 
     hold off
-    ylabel('Difference between Hologram LWC and CDP LWC (CORRECTED FOR SIZE RANGE)');
+    ylabel('Difference between Hologram LWC and CDP LWC (NOT CORRECTED FOR SIZE RANGE)');
     xlabel('Hologram brightness');
     grid on
     legend('Interpreter', 'none')
@@ -165,21 +162,6 @@ datamarkers = ["hexagram", "v", "o", "square"];
     ylabel('Hologram LWC / CDP LWC (NOT CORRECTED FOR SIZE RANGE)');
     grid on
     legend('Interpreter', 'none')
-    
-        
-    fig4 = figure(4);
-    
-    for R = 1:length(Regions)
-    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_difference(R)), 50, "filled", 'DisplayName', Regions(R).name);
-    hold on
-    end
-
-    hold off
-    xlabel('Shadow density using CDP mean diameter');
-    ylabel('Difference between Hologram LWC and CDP LWC (CORRECTED FOR SIZE RANGE)');
-    grid on
-    legend('Interpreter', 'none')
-    
     
 end
         
