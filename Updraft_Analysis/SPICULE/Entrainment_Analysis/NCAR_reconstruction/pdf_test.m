@@ -10,17 +10,17 @@ holotimes = ncread(holo_nc,'particletime');
 diameters = ncread(holo_nc,'d');
 totalN = length(diameters);
 
-date_ref = split(holofile.name, "_")
-year = date_ref{2}(1:4)
-month = date_ref{2}(5:6)
-day = date_ref{2}(7:8)
+date_ref = split(holofile.name, "_");
+year = date_ref{2}(1:4);
+month = date_ref{2}(5:6);
+day = date_ref{2}(7:8);
 
 OFFSET = -seconds(0.0);
 holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1)) + OFFSET;
 Indexes = (holotimes >= starttime) & (holotimes <= endtime);
 
 diameters = diameters(Indexes);
-totalN = length(diameters)
+totalN = length(diameters);
 
 
 numbins = numberofbins;
@@ -29,8 +29,8 @@ N = [];
 
 
 % Find total sample volume of all holograms combined
-samples = length(unique(holotimes(Indexes))) % number of holograms
-sample_volume = 13.095  %cubic cm per hologram
+samples = length(unique(holotimes(Indexes))); % number of holograms
+sample_volume = 13.095;  %cubic cm per hologram
 volume = samples*sample_volume;
 
 
@@ -50,8 +50,8 @@ for i = 1:numbins
     particlesinbin(i) = length(Dsinbin); %this is the number of particle diameters that fell between the bin edges    
 end
 
-particlesinbin
-N = particlesinbin./totalN
+particlesinbin;
+N = particlesinbin./totalN;
 C = particlesinbin./volume;
 err = sqrt(particlesinbin)./(volume);
 

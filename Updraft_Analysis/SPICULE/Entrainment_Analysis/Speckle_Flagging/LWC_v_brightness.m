@@ -80,7 +80,7 @@ for f = 1:length(Regions)
             end
                        
             cdp_perLWC = cdp_contours.*cdp_dropmass; % mass per bin g/m3/um
-            cdp_LWC = transpose(sum(cdp_perLWC)*10^6)  % g/m3
+            cdp_LWC = transpose(sum(cdp_perLWC)*10^6)  % g/cm3
             size(cdp_LWC)
             %cdp_LWC = ncread(core_cdpfile,'LWC');
             
