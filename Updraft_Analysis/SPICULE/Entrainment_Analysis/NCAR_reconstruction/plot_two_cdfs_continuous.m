@@ -14,13 +14,32 @@ year = date_ref{2}(1:4)
 month = date_ref{2}(5:6)
 day = date_ref{2}(7:8)
 
-OFFSET = -seconds(0.0);
-holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1)) + OFFSET;
+
+flightnum = split(region, "_");
+flightnum = flightnum{1};
+
+OFFSET = seconds(readtable(fullfile('../', 'holo_time_shift.csv')).(flightnum));
+brightnessfolder = dir(fullfile('../Hologram_Brightness', flightnum, '*.mat'));
+brightness_data = load(fullfile(brightnessfolder.folder, brightnessfolder.name)).data;
+brightness_time = brightness_data.imagetime;
+brightness_time = datetime(brightness_time, 'convertfrom', 'datenum') + OFFSET;
+brightness = brightness_data.brightness;
+
+holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1));
+corebrightIndexes = (brightness_time >= corestart) & (brightness_time <= coreend);
+edgebrightIndexes = (brightness_time >= edgestart) & (brightness_time <= edgeend);
 coreIndexes = (holotimes >= corestart) & (holotimes <= coreend);
 edgeIndexes = (holotimes >= edgestart) & (holotimes <= edgeend);
 
 coreDiam = diameters(coreIndexes);
 edgeDiam = diameters(edgeIndexes);
+coreBright = brightness(corebrightIndexes);
+edgeBright = brightness(edgebrightIndexes);
+
+length(coreDiam)
+length(coreBright)
+length(edgeDiam)
+length(edgeBright)
 
 % Find total sample volume of all holograms combined
 dy = 1.0; %cm ***NEEDS TO BE CHECKED

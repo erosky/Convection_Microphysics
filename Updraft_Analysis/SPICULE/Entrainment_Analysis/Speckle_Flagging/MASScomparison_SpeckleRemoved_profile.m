@@ -17,10 +17,10 @@ for f = 1:length(Regions)
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
     data = readtable(fullfile(region_folder, 'massdiameter90_comparison_table.csv'));
     
-    shadow_data = readtable(fullfile(region_folder, 'ShadowDensityTable.csv'));
+    shadow_data = readtable(fullfile(region_folder, 'ShadowDensityTable_MeanDiameter.csv'));
     shadow_ratio = shadow_data.Edge_ShadowDensity./shadow_data.Core_ShadowDensity;
     
-    Indexes = shadow_data.Core_ShadowDensity < 0.03;
+    Indexes = shadow_data.Core_ShadowDensity < 0.01;
     D_data = data.Edge90_Core90_ratio(Indexes);
     CB_data = data.HeightAboveCB(Indexes);
     
@@ -40,7 +40,7 @@ for f = 1:length(Regions)
 end
 
 f = gcf;
-exportgraphics(f, 'mass_diameter_90th_profiles_speckleremoved.png', 'Resolution',300);
+exportgraphics(f, 'mass_diameter_90th_profiles_shadowremoved.png', 'Resolution',300);
 
 ratio_data = full_data.Edge_90th./full_data.Core_90th;
 avg_diameter_data = full_data.Edge_LargeAvgDiam./full_data.Core_LargeAvgDiam;

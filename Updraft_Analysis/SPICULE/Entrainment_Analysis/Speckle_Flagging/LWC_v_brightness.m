@@ -57,7 +57,6 @@ for f = 1:length(Regions)
     
     for p = 1 : size(cdp_data)
             
-            
             core_cdpfile = fullfile(cdp_data(p).folder, cdp_data(p).name);
             N = ncread(core_cdpfile,'TotalConc');
             R = ncread(core_cdpfile,'MeanDiameter')/2;
@@ -125,8 +124,8 @@ datamarkers = ["hexagram", "v", "o", "square"];
     fig = figure(1);
 
     for R = 1:length(Regions)
-    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_difference(R)), 50, "filled", "b");
-    hold on
+%     scatter(cell2mat(shadow_density(R)), cell2mat(LWC_difference(R)), 50, "filled", "b");
+%     hold on
     scatter(cell2mat(shadow_density(R)), cell2mat(LWC_cdp(R)), 50, "filled", "g");
     hold on
     scatter(cell2mat(shadow_density(R)), cell2mat(LWC_holodec(R)), 50, "filled", "r");
@@ -134,7 +133,7 @@ datamarkers = ["hexagram", "v", "o", "square"];
     end
     hold off
     
-    ylabel('Difference between Hologram LWC and CDP LWC (NOT CORRECTED FOR SIZE RANGE)');
+    ylabel('Difference between Hologram LWC and CDP LWC (CORRECTED FOR SIZE RANGE)');
     xlabel('Shadow density using CDP mean diameter');
     grid on
     legend({'CDP-HOLODEC','CDP','HOLODEC'}, 'location', 'best')
@@ -162,7 +161,7 @@ datamarkers = ["hexagram", "v", "o", "square"];
 
     hold off
     xlabel('Hologram Brightness');
-    ylabel('Hologram LWC / CDP LWC (NOT CORRECTED FOR SIZE RANGE)');
+    ylabel('Hologram LWC / CDP LWC (CORRECTED FOR SIZE RANGE)');
     grid on
     legend('Interpreter', 'none')
     

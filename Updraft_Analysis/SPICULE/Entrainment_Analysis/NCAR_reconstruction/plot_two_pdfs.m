@@ -14,9 +14,9 @@ hold on
 er = errorbar(Dcenters2, C2, err2, "o", 'LineWidth', 1, 'Color', '#EDB120',  'HandleVisibility','off');
 hold on
 set(gca,'YScale','log','XScale','log')
-xlabel('Diameter (microns)'), ylabel('Concentration (#/cc)')
+xlabel('Diameter (microns)'), ylabel('Probability Density (um^{-1})')
 xlim([12 max([Dcenters1,Dcenters2])])
 legend
 title(titlestring,  'interpreter', 'none')
 
-saveas(fig, sprintf('%s/%s_dsd.png', outputfolder, titlestring));
+saveas(fig, sprintf('%s/%s_pdf.png', outputfolder, titlestring));

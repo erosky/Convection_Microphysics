@@ -23,12 +23,15 @@ for f = 1:length(Regions)
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
     brightness_data = load(fullfile(brightnessfolder(f).folder, brightnessfolder(f).name)).data;
     
+    flightnum = split(Regions(f).name, "_");
+    flightnum = flightnum{1};
+    
     directory = fullfile('../../', Regions(f).name);
     folder = fullfile(directory, '/InCloud');
     
     cdp_data = dir(fullfile(folder, 'cdp_*.nc'));
     
-    
+    timeshift = seconds(readtable(fullfile('../../', 'holo_time_shift.csv')).(flightnum));
     time = brightness_data.imagetime;
     brightness = brightness_data.brightness;
     flightdate = brightness_data.flightdate;
@@ -38,7 +41,7 @@ for f = 1:length(Regions)
     % Reformat time to human readable format
     % Given in netcdf file as seconds since 00:00:00 +0000 of flight date
     %time2 = datetime(str2double(time_ref{3}),str2double(time_ref{1}),str2double(time_ref{2})) + seconds(time);
-    time2 = datetime(time, 'convertfrom', 'datenum');
+    time2 = datetime(time, 'convertfrom', 'datenum') + timeshift;
     
     
     for p = 1 : size(cdp_data)

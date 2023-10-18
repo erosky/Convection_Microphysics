@@ -13,8 +13,6 @@ holo_sample_volume = 13.0995; %cm3/hologram
 Directory = "../Entrainment_Analysis";
 Regions = dir(fullfile(Directory, 'RF*_Region*'));
 
-brightnessfolder = dir(fullfile('../Hologram_Brightness', '*.mat'));
-
 output_folder = './';
 
 % shadow_density = {};
@@ -24,42 +22,32 @@ output_folder = './';
 for f = 1:length(Regions)
     
     shadow_density{f} = [];
-    holo_brightness{f} = [];
-    LWC_cdp{f} = [];
+    LWC_cdp{f} = [];  
     LWC_holodec{f} = [];
     LWC_adjusted{f} = [];
     
     % Open up the cloudpass file
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
-    brightness_data = load(fullfile(brightnessfolder(f).folder, brightnessfolder(f).name)).data;
-    
+
     directory = fullfile('../', Regions(f).name);
     
     cdp_folder = fullfile(directory, '/InCloud');    
     cdp_data = dir(fullfile(cdp_folder, 'cdp_*.nc'));
-
-    
-    time = brightness_data.imagetime; 
-    time = datetime(time, 'convertfrom', 'datenum') - seconds(1.0); % 1 second offset to correct for holodec offset
-    brightness = brightness_data.brightness;
-    flightdate = brightness_data.flightdate;
-    time_ref = split(flightdate, "/");
+ 
+    date_ref = split(holo_data.name, "_");
+    year = date_ref{2}(1:4);
+    month = date_ref{2}(5:6);
+    day = date_ref{2}(7:8);
 
     holo_path = fullfile(directory,'/NCAR_reconstruction');
     holo_data = dir(fullfile(holo_path, '*_HOLODEC.nc'));
     holo_file = fullfile(holo_data.folder, holo_data.name);
     holotime = ncread(holo_file,'time');
-    holo_region_LWC = ncread(holo_file,'lwc_round');
-    holotime = datetime(str2double(time_ref{3}),str2double(time_ref{1}),str2double(time_ref{2})) + seconds(holotime); 
-    
     % Reformat time to human readable format
     % Given in netcdf file as seconds since 00:00:00 +0000 of flight date
-    %time2 = datetime(str2double(time_ref{3}),str2double(time_ref{1}),str2double(time_ref{2})) + seconds(time);
-    
-    
-    
+    holotime = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotime); 
+     
     for p = 1 : size(cdp_data)
-            
             
             core_cdpfile = fullfile(cdp_data(p).folder, cdp_data(p).name);
             N = ncread(core_cdpfile,'TotalConc');
@@ -74,7 +62,7 @@ for f = 1:length(Regions)
             cdp_conc = sum(cdp_contours); % droplets per m3
             cdp_LWC = [];
             size(cdp_contours,2)
-            cdp_dropmass = []
+            cdp_dropmass = [];
             for d = 1 : size(D_cdp)
                 D_center = D_cdp(d)*10^-6; % meters
                 D_volume = (1/6)*pi*(D_center)^3;  % cubic meters (volume of each water droplet)
@@ -84,6 +72,10 @@ for f = 1:length(Regions)
                        
             cdp_perLWC = cdp_contours.*cdp_dropmass*10^6; % mass per bin g/cm3/um
             cdp_LWC = sum(cdp_perLWC) 
+            
+            % get holodec concentration for dropelts larger than 12
+            [timestamps, D_timeseries, LWC] = holoNC_to_LWC(holo_nc, starttime, endtime, time_ref, size_cutoff)
+            
 % 
 %             holo_brightness{f} = [holo_brightness{f}; b_1Hz];
 %             LWC_cdp{f} = [LWC_cdp{f}; cdp_LWC];

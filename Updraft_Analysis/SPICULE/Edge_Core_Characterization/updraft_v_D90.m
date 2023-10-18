@@ -11,7 +11,7 @@ function out = updraft_v_D90(region)
 region_folder = '../';
 timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 edgetimes = readtable(fullfile(region_folder, region, 'EdgeCloud', 'timestamps.csv'));
-coretimes = readtable(fullfile(region_folder, region, 'InCloud', 'timestamps.csv'))
+coretimes = readtable(fullfile(region_folder, region, 'InCloud', 'timestamps.csv'));
 
 edge_thermodynamics = dir(fullfile(region_folder, region, 'EdgeCloud', 'thermodynamics_*.csv'));
 core_thermodynamics = dir(fullfile(region_folder, region, 'InCloud', 'thermodynamics_*.csv'));
@@ -22,13 +22,21 @@ holo_file = fullfile(holo_data.folder, holo_data.name);
 holotimes = ncread(holo_file,'particletime');
 diameters = ncread(holo_file,'d');
 
+flightnum = split(region, "_");
+flightnum = flightnum{1};
 date_ref = split(holo_data.name, "_");
 year = date_ref{2}(1:4);
 month = date_ref{2}(5:6);
 day = date_ref{2}(7:8);
 
+timeshift = seconds(readtable(fullfile('../', 'holo_time_shift.csv')).(flightnum));
+brightnessfolder = dir(fullfile('../Hologram_Brightness', flightnum, '*.mat'));
+brightness_data = load(fullfile(brightnessfolder.folder, brightnessfolder.name)).data;
+brightness_time = brightness_data.imagetime;
+brightness_time = datetime(brightness_time, 'convertfrom', 'datenum') + timeshift;
+brightness = brightness_data.brightness;
+
 holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1));
-holotimes(end)
 
 output_path = '../Entrainment_Analysis';
 output_folder = fullfile(output_path, region);
@@ -81,7 +89,7 @@ for r=1 : height(timestamps)
             C_query = 0:0.01:1.0;
             [C2, d2, Clo2, Cup2]  = ecdf(edgeDiam,'Bounds','on');
             edge_interp = interp1(C2, d2, C_query);
-            edgeD = edge_interp(find(C_query==0.90))
+            edgeD = edge_interp(find(C_query==0.90));
             Dratio_edge_1Hz = [Dratio_edge_1Hz; edgeD/Dref];
         else
             Dratio_edge_1Hz = [Dratio_edge_1Hz; 0];
@@ -99,7 +107,7 @@ for r=1 : height(timestamps)
             C_query = 0:0.01:1.0;
             [C2, d2, Clo2, Cup2]  = ecdf(coreDiam,'Bounds','on');
             core_interp = interp1(C2, d2, C_query);
-            coreD = core_interp(find(C_query==0.90))
+            coreD = core_interp(find(C_query==0.90));
             Dratio_core_1Hz = [Dratio_core_1Hz; coreD/Dref];
         else
             Dratio_core_1Hz = [Dratio_core_1Hz; 0];
@@ -133,9 +141,9 @@ end
 
     fig1 = figure(1);
     for R = 1:height(timestamps)
-    scatter(cell2mat(vwindratio_edge(R)), cell2mat(Dratio_edge(R)), 50, "filled", "b");
+    scatter(cell2mat(vwindratio_edge(R)), cell2mat(Dratio_edge(R)), 50, "o");
     hold on
-    scatter(cell2mat(vwindratio_core(R)), cell2mat(Dratio_core(R)), 50, "filled", "g");
+    scatter(cell2mat(vwindratio_core(R)), cell2mat(Dratio_core(R)), 50, "filled");
     end
     hold off
     
@@ -150,9 +158,9 @@ end
     
     fig2 = figure(2);
     for R = 1:height(timestamps)
-    scatter(cell2mat(vwind_edge_list(R)), cell2mat(Dratio_edge(R)), 50, "filled", "b");
+    scatter(cell2mat(vwind_edge_list(R)), cell2mat(Dratio_edge(R)), 50, "o");
     hold on
-    scatter(cell2mat(vwind_core_list(R)), cell2mat(Dratio_core(R)), 50, "filled", "g");
+    scatter(cell2mat(vwind_core_list(R)), cell2mat(Dratio_core(R)), 50, "filled");
     end
     hold off
     

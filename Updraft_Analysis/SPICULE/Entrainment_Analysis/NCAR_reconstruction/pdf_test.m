@@ -1,4 +1,4 @@
-function [Dcenters, C, err] = pdf_test(region, starttime, endtime, numberofbins);
+function [Dcenters, N, err] = pdf_test(region, starttime, endtime, numberofbins);
 % return bin centers and number of particles in the bin
 
 % high resoltion time series of holodec
@@ -53,7 +53,8 @@ end
 particlesinbin;
 N = particlesinbin./totalN;
 C = particlesinbin./volume;
-err = sqrt(particlesinbin)./(volume);
+%err = sqrt(particlesinbin)./(volume);
+err = sqrt(particlesinbin)./(totalN);
 
 
 %Plot droplet size distribution in #/cc/um
