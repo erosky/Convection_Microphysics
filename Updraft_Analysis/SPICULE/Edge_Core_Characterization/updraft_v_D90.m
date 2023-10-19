@@ -65,6 +65,8 @@ for r=1 : height(timestamps)
     seconds_core = core_thermofile.Time;
     LWC_edge = edge_thermofile.LWC_cdp;
     LWC_core = core_thermofile.LWC_cdp;
+    shadow_edge = edge_thermofile.TotalConc_cdp_cm3*pi.*((0.5*edge_thermofile.MeanDiam*10^(-4)).^2)*15;
+    shadow_core = core_thermofile.TotalConc_cdp_cm3*pi.*((0.5*core_thermofile.MeanDiam*10^(-4)).^2)*15;
     vwind_edge = edge_thermofile.VerticalWind;
     vwind_core = core_thermofile.VerticalWind;
     
@@ -80,17 +82,22 @@ for r=1 : height(timestamps)
     Dratio_core_1Hz = [];
     
     for t = 1 : length(seconds_edge)
-        t_start = seconds_edge(t) + hours(12.0);
-        t_end = t_start + seconds(1.0);
-        edgeIndexes = (holotimes >= t_start) & (holotimes < t_end);
-        edgeDiam = diameters(edgeIndexes);
+        if shadow_edge(t) < 0.015
+        
+            t_start = seconds_edge(t) + hours(12.0);
+            t_end = t_start + seconds(1.0);
+            edgeIndexes = (holotimes >= t_start) & (holotimes < t_end);
+            edgeDiam = diameters(edgeIndexes);
 
-        if sum(edgeIndexes) > 0
-            C_query = 0:0.01:1.0;
-            [C2, d2, Clo2, Cup2]  = ecdf(edgeDiam,'Bounds','on');
-            edge_interp = interp1(C2, d2, C_query);
-            edgeD = edge_interp(find(C_query==0.90));
-            Dratio_edge_1Hz = [Dratio_edge_1Hz; edgeD/Dref];
+            if sum(edgeIndexes) > 0
+                C_query = 0:0.01:1.0;
+                [C2, d2, Clo2, Cup2]  = ecdf(edgeDiam,'Bounds','on');
+                edge_interp = interp1(C2, d2, C_query);
+                edgeD = edge_interp(find(C_query==0.90));
+                Dratio_edge_1Hz = [Dratio_edge_1Hz; edgeD/Dref];
+            else
+                Dratio_edge_1Hz = [Dratio_edge_1Hz; 0];
+            end
         else
             Dratio_edge_1Hz = [Dratio_edge_1Hz; 0];
         end
@@ -98,17 +105,21 @@ for r=1 : height(timestamps)
     
 
     for t = 1 : length(seconds_core)
-        t_start = seconds_core(t) + hours(12.0);
-        t_end = t_start + seconds(1.0);
-        coreIndexes = (holotimes >= t_start) & (holotimes < t_end);
-        coreDiam = diameters(coreIndexes);
+        if shadow_core(t) < 0.015
+            t_start = seconds_core(t) + hours(12.0);
+            t_end = t_start + seconds(1.0);
+            coreIndexes = (holotimes >= t_start) & (holotimes < t_end);
+            coreDiam = diameters(coreIndexes);
 
-        if sum(coreIndexes) > 0
-            C_query = 0:0.01:1.0;
-            [C2, d2, Clo2, Cup2]  = ecdf(coreDiam,'Bounds','on');
-            core_interp = interp1(C2, d2, C_query);
-            coreD = core_interp(find(C_query==0.90));
-            Dratio_core_1Hz = [Dratio_core_1Hz; coreD/Dref];
+            if sum(coreIndexes) > 0
+                C_query = 0:0.01:1.0;
+                [C2, d2, Clo2, Cup2]  = ecdf(coreDiam,'Bounds','on');
+                core_interp = interp1(C2, d2, C_query);
+                coreD = core_interp(find(C_query==0.90));
+                Dratio_core_1Hz = [Dratio_core_1Hz; coreD/Dref];
+            else
+                Dratio_core_1Hz = [Dratio_core_1Hz; 0];
+            end
         else
             Dratio_core_1Hz = [Dratio_core_1Hz; 0];
         end
@@ -139,39 +150,42 @@ for r=1 : height(timestamps)
    
 end
 
+    CM = lines(height(timestamps));
+    
     fig1 = figure(1);
     for R = 1:height(timestamps)
-    scatter(cell2mat(vwindratio_edge(R)), cell2mat(Dratio_edge(R)), 50, "o");
+    scatter(cell2mat(vwindratio_edge(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "o");
     hold on
-    scatter(cell2mat(vwindratio_core(R)), cell2mat(Dratio_core(R)), 50, "filled");
+    scatter(cell2mat(vwindratio_core(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "filled");
     end
     hold off
     
-    ylabel('D90 ratio (normalized by avg core value)');
+    ylabel('90th diameter ratio (normalized by average value in core)');
     xlabel('vwind ratio (normalized by avg core value)');
     ylim([0.6 1.4])
     grid on
     legend({'Edge','Core'}, 'location', 'best')
-    
+
 
     saveas(fig1, sprintf('%s/%s_WINDvD90.png', output_folder, region));
     
     fig2 = figure(2);
     for R = 1:height(timestamps)
-    scatter(cell2mat(vwind_edge_list(R)), cell2mat(Dratio_edge(R)), 50, "o");
+    scatter(cell2mat(vwind_edge_list(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "o");
     hold on
-    scatter(cell2mat(vwind_core_list(R)), cell2mat(Dratio_core(R)), 50, "filled");
+    scatter(cell2mat(vwind_core_list(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "filled");
     end
     hold off
     
-    ylabel('D90 ratio (normalized by avg core value)');
-    xlabel('vwind absolute');
-    ylim([0.6 1.4])
+    ylabel('D_{90th} / D_{90th,adiabatic}');
+    xlabel('vertical wind velocity (m/s)');
+    ylim([0.7 1.3])
     grid on
     legend({'Edge','Core'}, 'location', 'best')
     
 
     saveas(fig2, sprintf('%s/%s_WINDvD90_ABSOLUTE.png', output_folder, region));
+    savefig(fig2, sprintf('%s_WINDvD90_ABSOLUTE.fig', region));
 
 
 end

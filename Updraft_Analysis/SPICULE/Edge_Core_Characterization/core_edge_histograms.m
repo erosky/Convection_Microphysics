@@ -27,6 +27,9 @@ output_folder = fullfile(output_path, region);
 % rows are core-edge pairs, columns are data
 output = timestamps;
 
+flightnum = split(region, "_");
+flightnum = flightnum{1};
+
 % get core data
 % [core_90th_list, core_large_avg_list, core_largest_list] = get_core_90th(region)
 
@@ -98,15 +101,17 @@ for r=1 : height(timestamps)
     
     fig1 = figure(1);
 
-    histogram(LWC_edge,  "DisplayName", "Edge", "FaceColor", "green");
+    histogram(LWC_edge,  "DisplayName", "Edge", "FaceColor", "blue");
     hold on
-    histogram(LWC_core, "DisplayName", "Core", "FaceColor", "blue");
+    histogram(LWC_core, "DisplayName", "Core", "FaceColor", "green");
     hold off
     
-    ylabel('Counts');
-    xlabel('CDP Liquid Water Content (g/cm3)');
+    ylabel('Occurences (during 1Hz sampling)');
+    xlabel('CDP liquid water content (g/cm^3)');
     grid on
     legend('location', 'best')
+    
+    title(flightnum);
     
 
     saveas(fig1, sprintf('%s/%s_LWC.png', output_folder, passname));
@@ -119,10 +124,11 @@ for r=1 : height(timestamps)
     histogram(vwind_core, "DisplayName", "Core", "FaceColor", "cyan");
     hold off
     
-    ylabel('Counts');
-    xlabel('Vertical Wind Velocity m/s');
+    ylabel('Occurences (during 1Hz sampling)');
+    xlabel('Vertical wind velocity (m/s)');
     grid on
     legend('location', 'best')
+    title(flightnum);
     
 
     saveas(fig2, sprintf('%s/%s_vwind.png', output_folder, passname));

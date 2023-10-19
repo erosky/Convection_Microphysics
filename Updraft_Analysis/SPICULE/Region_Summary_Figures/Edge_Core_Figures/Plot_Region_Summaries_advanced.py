@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib
 from mpl_toolkits import mplot3d
 import matplotlib.cm as cm
+import matplotlib.patches as mpatches
 
 
 Entrainment_Set = ["RF01_Region01", "RF02_Region01", "RF04_Region01", "RF08_Region02"]
@@ -161,20 +162,6 @@ for folder in os.listdir(directory):
 				
 				
 
-
-# Read GNI data locations
-'''
-GNI_dir = "/data/emrosky-sim/Field_Projects/SPICULE/Data/GNI"
-GNI_metadata = os.path.join(GNI_dir, "metadata_mass.csv")
-gni_data = pd.read_csv(GNI_metadata, skipinitialspace=True)
-gni_lons = gni_data.loc[:,"Slide exposure average longitude (deg.decimal)"].values[:]
-gni_lats = gni_data.loc[:,"Slide exposure average latitude (deg.decimal)"].values[:]
-gni_alts = gni_data.loc[:,"Slide exposure average GPS altitude (m)"].values[:]
-gni_mass = gni_data.loc[:,"NaCl equivalent mass loading (microg/m**3)"].values[:]
-gni_flight = gni_data.loc[:,"Flight number"].values[:]
-'''
-
-
 for i in range(len(regions)):
 
 	flightnum = regions[i].split("_")
@@ -184,43 +171,30 @@ for i in range(len(regions)):
 	X, Y = np.meshgrid(x, y)
 	Z =  cloudbases[i]*np.ones(X.shape)
 	Ztop = cloudtops[i]*np.ones(X.shape)
+	Zmid = max(region_alts[i])*np.ones(X.shape)
 
 	fig = plt.figure()
 	ax = plt.axes(projection='3d')
+	ax.view_init(elev=15, azim=45)
 	ax.plot_surface(X, Y, Z, edgecolor='royalblue', lw=0.5, rstride=9, cstride=9, alpha=0.3)
-	ax.text(lonmaxs[i], latmaxs[i], cloudbases[i], 'cloud base', 'x', verticalalignment="bottom", horizontalalignment="right", color='royalblue', fontsize='small')
+	ax.text(lonmins[i], latmaxs[i], cloudbases[i], 'cloud base', 'y', verticalalignment="bottom", horizontalalignment="right", color='royalblue', fontsize='small')
 	
 	ax.plot_surface(X, Y, Ztop, edgecolor='royalblue', lw=0.1, rstride=9, cstride=9, alpha=0.15, linestyle=':',)
-	ax.text(lonmaxs[i], latmaxs[i], cloudtops[i], 'cloud top', 'x', verticalalignment="bottom", horizontalalignment="right", color='royalblue', fontsize='small')
+	ax.text(lonmins[i], latmaxs[i], cloudtops[i], 'cloud top', 'y', verticalalignment="bottom", horizontalalignment="right", color='royalblue', fontsize='small')
 	
-	'''
-	gni_x = []
-	gni_y = []
-	gni_z = []
-		
-	for j in range(len(gni_flight)):
-		if gni_flight[j] == flightnum[0]:
-			x, y = gni_lons[j], gni_lats[j]
-			if (gni_lons[j] <= lonmaxs[i]+0.2 and gni_lons[j] >= lonmins[i]-0.5 and gni_lats[j] <= latmaxs[i]+0.2 and gni_lats[j] >= latmins[i]-0.5):
-				gni_x.append(x)
-				gni_y.append(y)
-				gni_z.append(gni_alts[j])
-				
-	ax.scatter(gni_x, gni_y, gni_z, label='GNI samples')
-	'''
+	#ax.plot_surface(X, Y, Zmid, edgecolor='royalblue', lw=0.1, rstride=9, cstride=9, alpha=0.15, linestyle=':',)
 	
 	### Plot flight passes
-	minima = min(region_lwc[i])
-	maxima = max(region_lwc[i])
+	minima = min(region_temps[i])
+	maxima = max(region_temps[i])
 
-	print(region_lwc[i])
 	norm = matplotlib.colors.Normalize(vmin=minima, vmax=maxima, clip=True)
-	mapper = cm.ScalarMappable(norm=norm, cmap=cm.cividis)
+	mapper = cm.ScalarMappable(norm=norm, cmap=cm.cividis.reversed())
 	r_colors = []
-	for pt in range(len(region_lwc[i])):
-		r_colors.append(mapper.to_rgba(region_lwc[i][pt]))
+	for pt in range(len(region_temps[i])):
+		r_colors.append(mapper.to_rgba(region_temps[i][pt]))
 	
-	ax.scatter(region_lons[i], region_lats[i], region_alts[i], s=0.1, color=r_colors, alpha=0.5)
+	ax.scatter(region_lons[i], region_lats[i], region_alts[i], s=0.1, color=r_colors, alpha=0.8)
 	#, lw=0.2, linestyle='--', color=mapper.to_rgba(region_temps[i]
 	
 	for p in range(len(track_lats[i])):
@@ -230,19 +204,21 @@ for i in range(len(regions)):
 		colors = []
 		for pt in range(len(track_lwc[i][p])):
 			colors.append(mapper.to_rgba(track_lwc[i][p][pt]))
-		ax.scatter(xline, yline, zline, s=5.0, color=colors, alpha=1.0)
-		ax.text(xline[0], yline[0], zline[0], str(p+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='k', fontsize='xx-small')
+		ax.scatter(xline, yline, zline, s=7.0, color=(0.4660, 0.6740, 0.1880), alpha=1.0)
+		#ax.text(xline[0], yline[0], zline[0], str(p+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='k', fontsize='xx-small')
 		
 	for e in range(len(edge_lats[i])):
 		zline_e = edge_alts[i][e]
 		xline_e = edge_lons[i][e]
 		yline_e = edge_lats[i][e]
-		ax.plot3D(xline_e, yline_e, zline_e, color='m')
-		ax.text(xline_e[0], yline_e[0], zline_e[0], str(e+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='m', fontsize='xx-small')
+		#ax.plot3D(xline_e, yline_e, zline_e, color='m')
+		ax.scatter(xline_e, yline_e, zline_e, s=7.0, color=(0.4940, 0.1840, 0.5560), alpha=1.0)
+		#ax.text(xline_e[0], yline_e[0], zline_e[0], str(e+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='m', fontsize='xx-small')
 
 		
 		
-	fig.colorbar(mapper, label="Temperature(C)", shrink=0.5, pad=0.1)
+	cb = fig.colorbar(mapper, label="Temperature(C)", shrink=0.5, pad=0.1)
+	cb.ax.invert_yaxis()
 	ax.grid(False)
 	ax.set_title(flightnum[0]+" "+flightnum[1]);
 	ax.set_xlabel('Longitude', fontsize=8, rotation=0)
@@ -251,7 +227,10 @@ for i in range(len(regions)):
 	ax.set_zlabel('Altitude (m)', fontsize=8, rotation=90)
 	ax.set_xlim(lonmins[i],lonmaxs[i])
 	ax.set_ylim(latmins[i],latmaxs[i])
-	ax.legend()
+	#ax.legend()
+	core_patch = mpatches.Patch(color=(0.4660, 0.6740, 0.1880), label='Adiabatic updraft')
+	edge_patch = mpatches.Patch(color=(0.4940, 0.1840, 0.5560), label='Edge region')
+	plt.legend(handles=[core_patch, edge_patch], fontsize='small')
 
 	plt.savefig('Advanced/{}_sampling.png'.format(regions[i]), dpi=1000)
 	

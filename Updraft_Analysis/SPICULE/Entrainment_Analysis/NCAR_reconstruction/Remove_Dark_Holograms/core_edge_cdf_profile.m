@@ -13,16 +13,17 @@ output_folder = './';
 full_data = [];
 
 for f = 1:length(Regions)
+    string = split(Regions(f).name, "_");
     % Open up the cloudpass file
     region_folder = fullfile(Regions(f).folder, Regions(f).name);
     data = readtable(fullfile(region_folder, 'NCAR_reconstruction/cdf_comparison_table_shadowremoved.csv'));
     
     fig = figure(1);
     
-    scatter((data.Edge_D./data.Core_Dref), data.HeightAboveCB, 50, 'filled', 'DisplayName', Regions(f).name);
+    scatter((data.Edge_D./data.Core_Dref), data.HeightAboveCB, 50, 'filled', 'DisplayName', string{1});
     hold on
     ylabel('Height above cloud base (m)');
-    xlabel('Edge/Core 90th percentile diameter ratio');
+    xlabel('D_{90th,edge} / D_{90th,adiabatic}');
 
     legend('Interpreter', 'none', 'Location', 'northeastoutside');
     grid on

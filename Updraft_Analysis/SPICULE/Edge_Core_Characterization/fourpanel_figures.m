@@ -175,7 +175,7 @@ for r=1 : height(timestamps)
 end
 
     fig1 = figure(1);
-    tiledlayout(height(timestamps),1);
+    tcl = tiledlayout(height(timestamps),1);
     left_color = [0.6350 0.0780 0.1840];
     right_color = [0 .5 .5];
     set(fig1,'defaultAxesColorOrder',[left_color; right_color]);
@@ -205,16 +205,18 @@ end
     xmin = mean(datenum(time_core{R})) - (max([datenum(time_core{R});datenum(time_edge{R})])-min([datenum(time_core{R});datenum(time_edge{R})]))
     xmax = mean(datenum(time_core{R})) + (max([datenum(time_core{R});datenum(time_edge{R})])-min([datenum(time_core{R});datenum(time_edge{R})]))
     xlim([xmin xmax])
+    grid on
+    grid minor
     end
     hold off
 
-    xlabel('time');
-    grid on
-    legend({'Core'}, 'location', 'best')
+    xlabel('time (1Hz)');
+    legend({'adiabatic updraft'}, 'location', 'best')
+    title(tcl, flightnum)
     
     
     fig2 = figure(2);
-    tiledlayout(height(timestamps),1);
+    tcl = tiledlayout(height(timestamps),1);
     
     for R = 1:height(timestamps)
     ax = nexttile();
@@ -228,7 +230,7 @@ end
     scatter(datenum(time_core{R}), cell2mat(D90_core(R)), 50, [0.4660 0.6740 0.1880], "filled");
 %     hold on
 %     scatter(datenum(time_core{R}), cell2mat(D99_core(R)), 50, [0.4660 0.6740 0.1880], "filled");
-    ylabel('diameter (um)');
+    ylabel('D_{90th} (\mu m)');
     
     datetick('x')
     %xtickangle(45)
@@ -241,8 +243,9 @@ end
     end
     hold off
 
-    xlabel('time');
-    legend({'outside core', 'inside core'}, 'location', 'best')
+    xlabel('time (1Hz)');
+    legend({'outside updraft', 'inside updraft'}, 'location', 'best')
+    title(tcl, flightnum)
 
     %saveas(fig1, sprintf('%s/%s_LWCvD90.png', output_folder, region));
 

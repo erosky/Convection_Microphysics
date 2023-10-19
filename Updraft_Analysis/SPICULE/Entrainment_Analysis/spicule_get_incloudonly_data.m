@@ -39,6 +39,8 @@
     totalconc_2dc = ncread(ncfile,'CONC2DCR_RWOO'); % Total Fast 2DC Concentration, Round Particles' (#/L)
     totalconc_cdp = ncread(ncfile,'CONCD_LWOO'); % CDP Concentration (all cells) (#/cm3)
     icing = ncread(ncfile,'RICE'); % Raw Icing-Rate Indicator
+    meandiam_cdp = ncread(ncfile,'DBARD_LWOO'); % CDP mean diameter (um)
+    
     
     
     
@@ -105,6 +107,7 @@
          output_data.TotalConc_2dc_L = totalconc_2dc(timeIndexes);
          output_data.TotalConc_cdp_cm3 = totalconc_cdp(timeIndexes);
          output_data.Icing = icing(timeIndexes);
+         output_data.MeanDiam = meandiam_cdp(timeIndexes);
              
          
          % Compute below cloud values:
