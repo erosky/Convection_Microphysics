@@ -133,10 +133,11 @@ datamarkers = ["hexagram", "v", "o", "square"];
     end
     hold off
     
-    ylabel('Difference between Hologram LWC and CDP LWC (CORRECTED FOR SIZE RANGE)');
-    xlabel('Shadow density using CDP mean diameter');
+    ylabel('Liquid water content (g/cm^{3})');
+    xlabel('Shadow density parameter');
     grid on
-    legend({'CDP-HOLODEC','CDP','HOLODEC'}, 'location', 'best')
+    %legend({'CDP-HOLODEC','CDP','HOLODEC'}, 'location', 'best')
+    legend({'CDP','HOLODEC'}, 'location', 'best')
 
     fig2 = figure(2);
     
