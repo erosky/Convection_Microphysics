@@ -7,9 +7,11 @@ function out = moist_adiabatic_tests_MSE()
 
 
     % For each region in list
-    regions = ["RF01_Region01", "RF02_Region01", "RF04_Region02", "RF05_Region01", "RF08_Region02", "RF08_Region03", "RF08_Region04", "RF08_Region05", "RF10_Region01"];
+    %regions = ["RF01_Region01", "RF02_Region01", "RF04_Region02", "RF05_Region01", "RF08_Region02", "RF08_Region03", "RF08_Region04", "RF08_Region05", "RF10_Region01"];
+    regions = ["RF01_Region01", "RF02_Region01", "RF04_Region01", "RF08_Region02"];
+    labels = ["RF01 cloud", "RF02 cloud", "RF04 cloud", "RF08 cloud"];
     
-    directory = '/home/simulations/Field_Projects/Updraft_Analysis/SPICULE/';
+    directory = './SPICULE/';
 
     fig1 = figure(1);
     %fig2 = figure(2);
@@ -49,7 +51,7 @@ function out = moist_adiabatic_tests_MSE()
         
        
         figure(1)
-        e = errorbar(sorted_data(:,1), sorted_data(:,2), err, 'DisplayName',regions(r), 'CapSize',0, 'LineWidth',2.0);
+        e = errorbar(sorted_data(:,1), sorted_data(:,2), err, 'DisplayName',labels(r), 'CapSize',0, 'LineWidth',2.0);
         e.Marker = '*';
         e.MarkerSize = 10;
         e.CapSize = 0;
@@ -72,7 +74,7 @@ function out = moist_adiabatic_tests_MSE()
     legend('Interpreter', 'none', 'fontsize',25)
     hold off
     
-    saveas(fig1, 'MSE_conserved.png')
+    saveas(fig1, 'MSE_conserved_entrainment-set.png')
     
 %     figure(2)
 %     legend('Interpreter', 'none')

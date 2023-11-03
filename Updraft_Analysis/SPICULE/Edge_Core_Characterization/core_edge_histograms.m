@@ -106,12 +106,14 @@ for r=1 : height(timestamps)
     histogram(LWC_core, "DisplayName", "Core", "FaceColor", "green");
     hold off
     
-    ylabel('Occurences (during 1Hz sampling)');
-    xlabel('CDP liquid water content (g/cm^3)');
+    ylabel('Occurences (during 1Hz sampling)', 'FontSize', 14);
+    xlabel('CDP liquid water content (g/cm^3)', 'FontSize', 14);
     grid on
-    legend('location', 'best')
+    legend('location', 'best', 'FontSize', 14)
     
-    title(flightnum);
+    title(flightnum, 'FontSize', 14);
+    ax = gca;
+    ax.FontSize = 14;
     
 
     saveas(fig1, sprintf('%s/%s_LWC.png', output_folder, passname));
@@ -124,11 +126,14 @@ for r=1 : height(timestamps)
     histogram(vwind_core, "DisplayName", "Core", "FaceColor", "cyan");
     hold off
     
-    ylabel('Occurences (during 1Hz sampling)');
-    xlabel('Vertical wind velocity (m/s)');
+    ylabel('Occurences (during 1Hz sampling)','FontSize', 14);
+    xlabel('Vertical wind velocity (m/s)','FontSize', 14);
     grid on
-    legend('location', 'best')
-    title(flightnum);
+    legend('location', 'best','FontSize', 14)
+    title(flightnum,'FontSize', 14);
+    
+    ax = gca;
+    ax.FontSize = 14;
     
 
     saveas(fig2, sprintf('%s/%s_vwind.png', output_folder, passname));

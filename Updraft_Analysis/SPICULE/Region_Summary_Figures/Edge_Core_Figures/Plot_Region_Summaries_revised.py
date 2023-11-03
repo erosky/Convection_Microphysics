@@ -99,28 +99,38 @@ for folder in os.listdir(directory):
 		b_temp = []
 		b_vwind = []
 		
+		pairs_file = os.path.join(f, "core_edge_pairs.csv")
+		pairs = pd.read_csv(pairs_file, skipinitialspace=True, sep=',', engine='python')
+		edge_indexes = pairs.loc[:,"Edge"].values[:]
+		core_indexes = pairs.loc[:,"Core"].values[:]
 		
 		
-		for passfile in sorted(os.listdir(incloud)):
+		n_c=0
+		n_e=0
+		for passfile in sorted(os.listdir(incloud)):			
 			if "thermodynamics_" in passfile and "lock" not in passfile:
-				pass_csv = os.path.join(incloud, passfile)
-				passdata = pd.read_csv(pass_csv, skipinitialspace=True, sep=',', engine='python')
-				lons.append(passdata.loc[:,"Longitude"].values[:])
-				lats.append(passdata.loc[:,"Latitude"].values[:])
-				alts.append(passdata.loc[:,"Altitude"].values[:])
-				lwc.append(passdata.loc[:,"LWC_cdp"].values[:])
-				vwind.append(passdata.loc[:,"VerticalWind"].values[:])
-				temp.append(np.average(passdata.loc[:,"Temperature"].values[:]))
+				n_c=n_c+1
+				if n_c in core_indexes:
+					pass_csv = os.path.join(incloud, passfile)
+					passdata = pd.read_csv(pass_csv, skipinitialspace=True, sep=',', engine='python')
+					lons.append(passdata.loc[:,"Longitude"].values[:])
+					lats.append(passdata.loc[:,"Latitude"].values[:])
+					alts.append(passdata.loc[:,"Altitude"].values[:])
+					lwc.append(passdata.loc[:,"LWC_cdp"].values[:])
+					vwind.append(passdata.loc[:,"VerticalWind"].values[:])
+					temp.append(np.average(passdata.loc[:,"Temperature"].values[:]))
 		if os.path.isdir(edgecloud):
 			for passfile in sorted(os.listdir(edgecloud)):
 				if "thermodynamics_" in passfile and "lock" not in passfile:
-					pass_csv = os.path.join(edgecloud, passfile)
-					passdata = pd.read_csv(pass_csv, skipinitialspace=True, sep=',', engine='python')
-					e_lons.append(passdata.loc[:,"Longitude"].values[:])
-					e_lats.append(passdata.loc[:,"Latitude"].values[:])
-					e_alts.append(passdata.loc[:,"Altitude"].values[:])
-					e_lwc.append(passdata.loc[:,"LWC_cdp"].values[:])
-					e_temp.append(np.average(passdata.loc[:,"Temperature"].values[:]))
+					n_e=n_e+1
+					if n_e in edge_indexes:
+						pass_csv = os.path.join(edgecloud, passfile)
+						passdata = pd.read_csv(pass_csv, skipinitialspace=True, sep=',', engine='python')
+						e_lons.append(passdata.loc[:,"Longitude"].values[:])
+						e_lats.append(passdata.loc[:,"Latitude"].values[:])
+						e_alts.append(passdata.loc[:,"Altitude"].values[:])
+						e_lwc.append(passdata.loc[:,"LWC_cdp"].values[:])
+						e_temp.append(np.average(passdata.loc[:,"Temperature"].values[:]))
 						
 		if os.path.isdir(belowcloud):
 			for passfile in os.listdir(belowcloud):
@@ -214,6 +224,14 @@ for i in range(len(regions)):
 		#ax.plot3D(xline_e, yline_e, zline_e, color='m')
 		ax.scatter(xline_e, yline_e, zline_e, s=10.0, color=(0.4940, 0.1840, 0.5560), alpha=1.0)
 		#ax.text(xline_e[0], yline_e[0], zline_e[0], str(e+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='m', fontsize='xx-small')
+		
+	for b in range(len(below_lats[i])):
+		zline_b = below_alts[i][b]
+		xline_b = below_lons[i][b]
+		yline_b = below_lats[i][b]
+		#ax.plot3D(xline_e, yline_e, zline_e, color='m')
+		ax.scatter(xline_b, yline_b, zline_b, s=10.0, color=(0.4660, 0.6740, 0.1880), alpha=1.0)
+		#ax.text(xline_e[0], yline_e[0], zline_e[0], str(e+1), rotation=40.0, verticalalignment="baseline", horizontalalignment="left", color='m', fontsize='xx-small')
 
 		
 		
@@ -233,7 +251,7 @@ for i in range(len(regions)):
 	edge_patch = mpatches.Patch(color=(0.4940, 0.1840, 0.5560), label='Edge region')
 	plt.legend(handles=[core_patch, edge_patch], fontsize='medium')
 
-	plt.savefig('Advanced/{}_sampling.png'.format(regions[i]), dpi=1000)
+	plt.savefig('Advanced/{}_sampling_belowcloud.png'.format(regions[i]), dpi=1000)
 	
 	
 

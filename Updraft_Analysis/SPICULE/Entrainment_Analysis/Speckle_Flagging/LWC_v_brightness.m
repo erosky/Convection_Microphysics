@@ -126,18 +126,18 @@ datamarkers = ["hexagram", "v", "o", "square"];
     for R = 1:length(Regions)
 %     scatter(cell2mat(shadow_density(R)), cell2mat(LWC_difference(R)), 50, "filled", "b");
 %     hold on
-    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_cdp(R)), 50, "filled", "g");
+    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_cdp(R)), 55, "filled", "b");
     hold on
-    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_holodec(R)), 50, "filled", "r");
+    scatter(cell2mat(shadow_density(R)), cell2mat(LWC_holodec(R)), 55, "filled","square", "r");
     hold on 
     end
     hold off
     
-    ylabel('Liquid water content (g/cm^{3})');
-    xlabel('Shadow density parameter');
+    ylabel('Liquid water content (g/cm^{3})', 'FontSize', 16);
+    xlabel('Shadow density parameter', 'FontSize', 16);
     grid on
     %legend({'CDP-HOLODEC','CDP','HOLODEC'}, 'location', 'best')
-    legend({'CDP','HOLODEC'}, 'location', 'best')
+    legend({'CDP','HOLODEC'}, 'location', 'best', 'FontSize', 16)
 
     fig2 = figure(2);
     
