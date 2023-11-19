@@ -8,7 +8,7 @@ function out = updraft_v_D90(region)
 
 
 % get core reference
-region_folder = '../';
+region_folder = '../../';
 timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 edgetimes = readtable(fullfile(region_folder, region, 'EdgeCloud', 'timestamps.csv'));
 coretimes = readtable(fullfile(region_folder, region, 'InCloud', 'timestamps.csv'));
@@ -29,8 +29,8 @@ year = date_ref{2}(1:4);
 month = date_ref{2}(5:6);
 day = date_ref{2}(7:8);
 
-timeshift = seconds(readtable(fullfile('../', 'holo_time_shift.csv')).(flightnum));
-brightnessfolder = dir(fullfile('../Hologram_Brightness', flightnum, '*.mat'));
+timeshift = seconds(readtable(fullfile('../../', 'holo_time_shift.csv')).(flightnum));
+brightnessfolder = dir(fullfile('../../Hologram_Brightness', flightnum, '*.mat'));
 brightness_data = load(fullfile(brightnessfolder.folder, brightnessfolder.name)).data;
 brightness_time = brightness_data.imagetime;
 brightness_time = datetime(brightness_time, 'convertfrom', 'datenum') + timeshift;
@@ -38,7 +38,7 @@ brightness = brightness_data.brightness;
 
 holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1));
 
-output_path = '../Entrainment_Analysis';
+output_path = '../../Entrainment_Analysis';
 output_folder = fullfile(output_path, region);
 
 core_edge_stats = readtable(fullfile(output_folder, 'NCAR_reconstruction', 'cdf_comparison_table.csv'))
@@ -57,6 +57,8 @@ for r=1 : height(timestamps)
     vwindratio_core{r} = [];
     vwind_core_list{r} = [];
     vwind_edge_list{r} = [];
+    lwcratio_edge{r} = [];
+    lwcratio_core{r} = [];
 
    
     edge_thermofile = readtable(fullfile(edge_thermodynamics(edge_pass).folder, edge_thermodynamics(edge_pass).name));
@@ -72,6 +74,13 @@ for r=1 : height(timestamps)
     
     Dref = Drefs(r)
     vwind_ref =  mean(vwind_core,"omitnan");
+    lwc_ref =  mean(LWC_core,"omitnan");
+    
+    % get D90/Dref for each timestep
+    % first edge
+    
+    lwc_edge_1Hz = LWC_edge./lwc_ref;
+    lwc_core_1Hz = LWC_core./lwc_ref;
     
     % get D90/Dref for each timestep
     % first edge
@@ -131,6 +140,8 @@ for r=1 : height(timestamps)
     vwindratio_core{r} = [vwindratio_core{r}, vwind_core_1Hz];
     vwind_core_list{r} = [vwind_core_list{r}, vwind_core];
     vwind_edge_list{r} = [vwind_edge_list{r}, vwind_edge];
+    lwcratio_edge{r} = [lwcratio_edge{r}, lwc_edge_1Hz];
+    lwcratio_core{r} = [lwcratio_core{r}, lwc_core_1Hz];
 
     
     
@@ -154,38 +165,32 @@ end
     
     fig1 = figure(1);
     for R = 1:height(timestamps)
-    scatter(cell2mat(vwindratio_edge(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "o");
+    wind_edge = cell2mat(vwind_edge_list(R));
+    wind_core = cell2mat(vwind_core_list(R));
+
+    wind_edge(wind_edge>=0)=1;
+    wind_edge(wind_edge<0)=-1;
+    
+    wind_core(wind_core>=0)=1;
+    wind_core(wind_core<0)=-1;
+
+    scatter(cell2mat(lwcratio_edge(R)), cell2mat(Dratio_edge(R)), 50, wind_edge, "o");
+    colormap(gca,"winter")
     hold on
-    scatter(cell2mat(vwindratio_core(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "filled");
+    scatter(cell2mat(lwcratio_core(R)), cell2mat(Dratio_core(R)), 50, wind_core, "filled");
     end
     hold off
     
     ylabel('90th diameter ratio (normalized by average value in core)');
-    xlabel('vwind ratio (normalized by avg core value)');
+    xlabel('dilution');
     ylim([0.6 1.4])
     grid on
     legend({'Edge','Core'}, 'location', 'best')
+    colorbar
 
 
     %saveas(fig1, sprintf('%s/%s_WINDvD90.png', output_folder, region));
     
-    fig2 = figure(2);
-    for R = 1:height(timestamps)
-    scatter(cell2mat(vwind_edge_list(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "o");
-    hold on
-    scatter(cell2mat(vwind_core_list(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "filled");
-    end
-    hold off
-    
-    ylabel('D_{90th} / D_{90th,adiabatic}');
-    xlabel('vertical wind velocity (m/s)');
-    ylim([0.7 1.3])
-    grid on
-    legend({'Edge','Core'}, 'location', 'best')
-    
-
-    %saveas(fig2, sprintf('%s/%s_WINDvD90_ABSOLUTE.png', output_folder, region));
-    %savefig(fig2, sprintf('%s_WINDvD90_ABSOLUTE.fig', region));
 
 
 end

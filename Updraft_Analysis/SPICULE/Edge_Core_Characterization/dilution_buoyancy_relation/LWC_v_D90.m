@@ -8,7 +8,7 @@ function out = updraft_v_D90(region)
 
 
 % get core reference
-region_folder = '../';
+region_folder = '../../';
 timestamps = readtable(fullfile(region_folder, region, 'core_edge_pairs.csv'));
 edgetimes = readtable(fullfile(region_folder, region, 'EdgeCloud', 'timestamps.csv'));
 coretimes = readtable(fullfile(region_folder, region, 'InCloud', 'timestamps.csv'));
@@ -29,8 +29,8 @@ year = date_ref{2}(1:4);
 month = date_ref{2}(5:6);
 day = date_ref{2}(7:8);
 
-timeshift = seconds(readtable(fullfile('../', 'holo_time_shift.csv')).(flightnum));
-brightnessfolder = dir(fullfile('../Hologram_Brightness', flightnum, '*.mat'));
+timeshift = seconds(readtable(fullfile('../..', 'holo_time_shift.csv')).(flightnum));
+brightnessfolder = dir(fullfile('../../Hologram_Brightness', flightnum, '*.mat'));
 brightness_data = load(fullfile(brightnessfolder.folder, brightnessfolder.name)).data;
 brightness_time = brightness_data.imagetime;
 brightness_time = datetime(brightness_time, 'convertfrom', 'datenum') + timeshift;
@@ -38,7 +38,7 @@ brightness = brightness_data.brightness;
 
 holotimes = datetime(str2double(year),str2double(month),str2double(day)) + seconds(holotimes(:,1));
 
-output_path = '../Entrainment_Analysis';
+output_path = '../../Entrainment_Analysis';
 output_folder = fullfile(output_path, region);
 
 core_edge_stats = readtable(fullfile(output_folder, 'NCAR_reconstruction', 'cdf_comparison_table.csv'))
@@ -53,10 +53,12 @@ for r=1 : height(timestamps)
    
     Dratio_core{r} = [];
     Dratio_edge{r} = [];
-    vwindratio_edge{r} = [];
-    vwindratio_core{r} = [];
-    vwind_core_list{r} = [];
+    lwcratio_edge{r} = [];
+    lwcratio_core{r} = [];
+    lwc_core_list{r} = [];
+    lwc_edge_list{r} = [];
     vwind_edge_list{r} = [];
+    vwind_direction_list{r} = [];
 
    
     edge_thermofile = readtable(fullfile(edge_thermodynamics(edge_pass).folder, edge_thermodynamics(edge_pass).name));
@@ -67,17 +69,18 @@ for r=1 : height(timestamps)
     LWC_core = core_thermofile.LWC_cdp;
     shadow_edge = edge_thermofile.TotalConc_cdp_cm3*pi.*((0.5*edge_thermofile.MeanDiam*10^(-4)).^2)*15;
     shadow_core = core_thermofile.TotalConc_cdp_cm3*pi.*((0.5*core_thermofile.MeanDiam*10^(-4)).^2)*15;
-    vwind_edge = edge_thermofile.VerticalWind;
+    vwind_edge = edge_thermofile.VerticalWind
+    vwind_direction = vwind_edge>0;
     vwind_core = core_thermofile.VerticalWind;
     
     Dref = Drefs(r)
-    vwind_ref =  mean(vwind_core,"omitnan");
+    lwc_ref =  mean(LWC_core,"omitnan");
     
     % get D90/Dref for each timestep
     % first edge
     
-    vwind_edge_1Hz = vwind_edge./vwind_ref;
-    vwind_core_1Hz = vwind_core./vwind_ref;
+    lwc_edge_1Hz = LWC_edge./lwc_ref;
+    lwc_core_1Hz = LWC_core./lwc_ref;
     Dratio_edge_1Hz = [];
     Dratio_core_1Hz = [];
     
@@ -127,10 +130,12 @@ for r=1 : height(timestamps)
  
     Dratio_core{r} = [Dratio_core{r}, Dratio_core_1Hz];
     Dratio_edge{r} = [Dratio_edge{r}, Dratio_edge_1Hz];
-    vwindratio_edge{r} = [vwindratio_edge{r}, vwind_edge_1Hz];
-    vwindratio_core{r} = [vwindratio_core{r}, vwind_core_1Hz];
-    vwind_core_list{r} = [vwind_core_list{r}, vwind_core];
-    vwind_edge_list{r} = [vwind_edge_list{r}, vwind_edge];
+    lwcratio_edge{r} = [lwcratio_edge{r}, lwc_edge_1Hz];
+    lwcratio_core{r} = [lwcratio_core{r}, lwc_core_1Hz];
+    lwc_core_list{r} = [lwc_core_list{r}, LWC_core];
+    lwc_edge_list{r} = [lwc_edge_list{r}, LWC_edge];
+    vwind_edge_list{r} = [vwind_edge_list, vwind_edge];
+    vwind_direction_list{r} = [vwind_direction_list, vwind_direction];
 
     
     
@@ -150,42 +155,29 @@ for r=1 : height(timestamps)
    
 end
 
+
     CM = lines(height(timestamps));
     
     fig1 = figure(1);
     for R = 1:height(timestamps)
-    scatter(cell2mat(vwindratio_edge(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "o");
-    hold on
-    scatter(cell2mat(vwindratio_core(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "filled");
-    end
-    hold off
-    
-    ylabel('90th diameter ratio (normalized by average value in core)');
-    xlabel('vwind ratio (normalized by avg core value)');
-    ylim([0.6 1.4])
-    grid on
-    legend({'Edge','Core'}, 'location', 'best')
-
-
-    %saveas(fig1, sprintf('%s/%s_WINDvD90.png', output_folder, region));
-    
-    fig2 = figure(2);
-    for R = 1:height(timestamps)
-    scatter(cell2mat(vwind_edge_list(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "o");
-    hold on
-    scatter(cell2mat(vwind_core_list(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "filled");
+        colors = cell2mat(vwind_edge_list{R})
+        lwcratio_edge(R)
+        scatter(cell2mat(lwcratio_edge(R)), cell2mat(Dratio_edge(R)), 50, CM(R,:), "filled");
+        hold on
+        scatter(cell2mat(lwcratio_core(R)), cell2mat(Dratio_core(R)), 50, CM(R,:), "+");
     end
     hold off
     
     ylabel('D_{90th} / D_{90th,adiabatic}');
-    xlabel('vertical wind velocity (m/s)');
-    ylim([0.7 1.3])
+    xlabel('LWC / LWC_{adiabatic}');
+    ylim([0.6 1.4])
     grid on
     legend({'Edge','Core'}, 'location', 'best')
     
 
-    %saveas(fig2, sprintf('%s/%s_WINDvD90_ABSOLUTE.png', output_folder, region));
-    %savefig(fig2, sprintf('%s_WINDvD90_ABSOLUTE.fig', region));
+    %saveas(fig1, sprintf('%s/%s_LWCvD90.png', output_folder, region));
+    savefig(fig1, sprintf('%s_LWCvD90.fig', region))
+    
 
 
 end
