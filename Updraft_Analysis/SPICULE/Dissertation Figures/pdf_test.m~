@@ -1,4 +1,4 @@
-function [Dcenters, N, err, zN] = pdf_test(region, starttime, endtime, numberofbins);
+function [Dcenters, N, err] = pdf_test(region, starttime, endtime, numberofbins);
 % return bin centers and number of particles in the bin
 
 % high resoltion time series of holodec
@@ -69,16 +69,15 @@ for i = 1:numbins
 end
 
 z;
-ztotal = sum(z, 1);
-zN = z./(ztotal*increment)
-mean_uncertainty = std( zN,0,2 )./sqrt(samples)
+ztotal = sum(z, 1
+zN = z./(totalN*increment)
+mean_uncertainty = std( zN,0,2 )
 
 particlesinbin;
 N = particlesinbin./(totalN*increment);
 C = particlesinbin./volume;
 %err = sqrt(particlesinbin)./(volume);
-%err = sqrt(particlesinbin)./(totalN);
-err = mean_uncertainty;
+err = sqrt(particlesinbin)./(totalN);
 
 
 %Plot droplet size distribution in #/cc/um

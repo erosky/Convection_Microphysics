@@ -1,4 +1,4 @@
-function [Dcenters, N, err, zN] = pdf_test(region, starttime, endtime, numberofbins);
+function [Dcenters, particlesinbin, err, z] = pdf_test(region, starttime, endtime, numberofbins);
 % return bin centers and number of particles in the bin
 
 % high resoltion time series of holodec
@@ -69,9 +69,9 @@ for i = 1:numbins
 end
 
 z;
-ztotal = sum(z, 1);
-zN = z./(ztotal*increment)
-mean_uncertainty = std( zN,0,2 )./sqrt(samples)
+%ztotal = sum(z, 1);
+%zN = z./(ztotal*increment)
+mean_uncertainty = std( z,0,2 )./sqrt(samples)
 
 particlesinbin;
 N = particlesinbin./(totalN*increment);
