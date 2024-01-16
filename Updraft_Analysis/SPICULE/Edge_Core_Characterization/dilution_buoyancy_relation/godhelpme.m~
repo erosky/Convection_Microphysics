@@ -196,19 +196,16 @@ end
     wind_edge = cell2mat(vwind_edge_list(R));
     wind_core = cell2mat(vwind_core_list(R));
     
-    Drat_edge = cell2mat(Dratio_edge(R));
-    Drat_core = cell2mat(Dratio_core(R));
-    
-     Drat_edge(Drat_edge>=1.2)=1.2;
-     Drat_edge(Drat_edge<0.8)=0.8;
-     
-     Drat_core(Drat_core>=1.2)=1.2;
-     Drat_core(Drat_core<0.8)=0.8;
+%     wind_edge(wind_edge>=0)=1;
+%     wind_edge(wind_edge<0)=-1;
+%     
+%     wind_core(wind_core>=0)=1;
+%     wind_core(wind_core<0)=-1;
 
-    scatter(cell2mat(lwcratio_edge(R)), wind_edge, 50, Drat_edge, "o");
-    colormap(gca,"spring")
+    scatter(cell2mat(lwcratio_edge(R)), wind_edge, 50, cell2mat(Dratio_edge(R)), "o");
+    colormap(gca,"hsv")
     hold on
-    scatter(cell2mat(lwcratio_core(R)), wind_core, 50, Drat_core, "filled");
+    scatter(cell2mat(lwcratio_core(R)), wind_core, 50, cell2mat(Dratio_core(R)), "filled");
     end
     hold off
     
