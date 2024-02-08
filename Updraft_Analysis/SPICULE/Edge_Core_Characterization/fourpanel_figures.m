@@ -201,7 +201,7 @@ end
     
     datetick('x')
     %xtickangle(45)
-    set(gca,'Xticklabel',[])
+    %set(gca,'Xticklabel',[])
     xmin = mean(datenum(time_core{R})) - (max([datenum(time_core{R});datenum(time_edge{R})])-min([datenum(time_core{R});datenum(time_edge{R})]))
     xmax = mean(datenum(time_core{R})) + (max([datenum(time_core{R});datenum(time_edge{R})])-min([datenum(time_core{R});datenum(time_edge{R})]))
     xlim([xmin xmax])
