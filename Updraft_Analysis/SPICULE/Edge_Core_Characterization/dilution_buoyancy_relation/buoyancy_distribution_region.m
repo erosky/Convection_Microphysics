@@ -1,5 +1,4 @@
-
-function out = updraft_v_D90(region)
+function [Dratio_edge, vwindratio_edge, lwcratio_edge] = buoyancy_distribution_region(region)
 
 % Use core D90 as reference. And core vwind as reference.
 % For each 1Hz in the edge and core:
@@ -45,22 +44,21 @@ core_edge_stats = readtable(fullfile(output_folder, 'NCAR_reconstruction', 'cdf_
 
 Drefs = core_edge_stats.Core_Dref;
 
+
+Dratio_core = [];
+Dratio_edge = [];
+vwindratio_edge = [];
+vwindratio_core = [];
+vwind_core_list = [];
+vwind_edge_list = [];
+lwcratio_edge = [];
+lwcratio_core = [];
+
 for r=1 : height(timestamps)
    % get droplet size data
    core_pass = timestamps{r,2};
    edge_pass = timestamps{r,1};
-   
-   
-    Dratio_core{r} = [];
-    Dratio_edge{r} = [];
-    vwindratio_edge{r} = [];
-    vwindratio_core{r} = [];
-    vwind_core_list{r} = [];
-    vwind_edge_list{r} = [];
-    lwcratio_edge{r} = [];
-    lwcratio_core{r} = [];
 
-   
     edge_thermofile = readtable(fullfile(edge_thermodynamics(edge_pass).folder, edge_thermodynamics(edge_pass).name));
     core_thermofile = readtable(fullfile(core_thermodynamics(core_pass).folder, core_thermodynamics(core_pass).name));
     seconds_edge = edge_thermofile.Time;
@@ -134,14 +132,14 @@ for r=1 : height(timestamps)
         end
     end
  
-    Dratio_core{r} = [Dratio_core{r}, Dratio_core_1Hz];
-    Dratio_edge{r} = [Dratio_edge{r}, Dratio_edge_1Hz];
-    vwindratio_edge{r} = [vwindratio_edge{r}, vwind_edge_1Hz];
-    vwindratio_core{r} = [vwindratio_core{r}, vwind_core_1Hz];
-    vwind_core_list{r} = [vwind_core_list{r}, vwind_core];
-    vwind_edge_list{r} = [vwind_edge_list{r}, vwind_edge];
-    lwcratio_edge{r} = [lwcratio_edge{r}, lwc_edge_1Hz];
-    lwcratio_core{r} = [lwcratio_core{r}, lwc_core_1Hz];
+    Dratio_core = [Dratio_core; Dratio_core_1Hz];
+    Dratio_edge = [Dratio_edge; Dratio_edge_1Hz];
+    vwindratio_edge = [vwindratio_edge; vwind_edge_1Hz];
+    vwindratio_core = [vwindratio_core; vwind_core_1Hz];
+    vwind_core_list = [vwind_core_list; vwind_core];
+    vwind_edge_list = [vwind_edge_list; vwind_edge];
+    lwcratio_edge = [lwcratio_edge; lwc_edge_1Hz];
+    lwcratio_core = [lwcratio_core; lwc_core_1Hz];
 
     
     
@@ -161,66 +159,6 @@ for r=1 : height(timestamps)
    
 end
 
-    CM = lines(height(timestamps));
-    
-    fig1 = figure(1);
-    for R = 1:height(timestamps)
-    wind_edge = cell2mat(vwind_edge_list(R));
-    wind_core = cell2mat(vwind_core_list(R));
-    
-%     wind_edge(wind_edge>=0)=1;
-%     wind_edge(wind_edge<0)=-1;
-%     
-%     wind_core(wind_core>=0)=1;
-%     wind_core(wind_core<0)=-1;
-
-    scatter(cell2mat(lwcratio_edge(R)), cell2mat(Dratio_edge(R)), 50, wind_edge, "o");
-    colormap(gca,"winter")
-    hold on
-    scatter(cell2mat(lwcratio_core(R)), cell2mat(Dratio_core(R)), 50, wind_core, "filled");
-    end
-    hold off
-    
-    ylabel('90th diameter ratio (normalized by average value in core)');
-    xlabel('dilution');
-    ylim([0.6 1.4])
-    grid on
-    legend({'Edge','Core'}, 'location', 'best')
-    colorbar
-
-
-    %saveas(fig1, sprintf('%s/%s_WINDvD90.png', output_folder, region));
-    
-    fig2 = figure(2);
-    for R = 1:height(timestamps)
-%     wind_edge = cell2mat(vwind_edge_list(R));
-%     wind_core = cell2mat(vwind_core_list(R));
-    wind_edge = cell2mat(vwindratio_edge(R));
-    wind_core = cell2mat(vwindratio_core(R));
-    
-    Drat_edge = cell2mat(Dratio_edge(R));
-    Drat_core = cell2mat(Dratio_core(R));
-    
-     Drat_edge(Drat_edge>=1.2)=1.2;
-     Drat_edge(Drat_edge<0.8)=0.8;
-     
-     Drat_core(Drat_core>=1.2)=1.2;
-     Drat_core(Drat_core<0.8)=0.8;
-
-    scatter(cell2mat(lwcratio_edge(R)), wind_edge, 50, Drat_edge, "o");
-    colormap(gca,"spring")
-    hold on
-    scatter(cell2mat(lwcratio_core(R)), wind_core, 50, Drat_core, "filled");
-    end
-    hold off
-    
-    ylabel('vertical wind velocity');
-    xlabel('dilution');
-    grid on
-    legend({'Edge','Core'}, 'location', 'best')
-    colorbar
-
-    
 
 
 end

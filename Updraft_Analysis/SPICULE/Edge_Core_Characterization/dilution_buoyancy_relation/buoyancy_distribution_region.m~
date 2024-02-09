@@ -1,5 +1,4 @@
-
-function out = updraft_v_D90(region)
+function [windratio, d90ratio, LWCratio] = buoyancy_distribution_region()
 
 % Use core D90 as reference. And core vwind as reference.
 % For each 1Hz in the edge and core:
@@ -45,22 +44,21 @@ core_edge_stats = readtable(fullfile(output_folder, 'NCAR_reconstruction', 'cdf_
 
 Drefs = core_edge_stats.Core_Dref;
 
+
+Dratio_core = [];
+Dratio_edge = [];
+vwindratio_edge = [];
+vwindratio_core = [];
+vwind_core_list = [];
+vwind_edge_list = [];
+lwcratio_edge = [];
+lwcratio_core = [];
+
 for r=1 : height(timestamps)
    % get droplet size data
    core_pass = timestamps{r,2};
    edge_pass = timestamps{r,1};
-   
-   
-    Dratio_core{r} = [];
-    Dratio_edge{r} = [];
-    vwindratio_edge{r} = [];
-    vwindratio_core{r} = [];
-    vwind_core_list{r} = [];
-    vwind_edge_list{r} = [];
-    lwcratio_edge{r} = [];
-    lwcratio_core{r} = [];
 
-   
     edge_thermofile = readtable(fullfile(edge_thermodynamics(edge_pass).folder, edge_thermodynamics(edge_pass).name));
     core_thermofile = readtable(fullfile(core_thermodynamics(core_pass).folder, core_thermodynamics(core_pass).name));
     seconds_edge = edge_thermofile.Time;
@@ -219,8 +217,6 @@ end
     grid on
     legend({'Edge','Core'}, 'location', 'best')
     colorbar
-
-    
 
 
 end
