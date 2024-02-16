@@ -29,15 +29,15 @@ biggest_buoyancy = vwindratio_all(Dratio_all > biggest_bin(1) & Dratio_all <= bi
     
 fig1 = figure(1);
 
-    histogram(smallest_buoyancy, 'BinWidth', 0.25, 'Normalization', 'pdf', 'FaceColor', [0.3010 0.7450 0.9330]);
+    histogram(smallest_buoyancy, 'BinWidth', 0.2, 'Normalization', 'pdf', 'FaceColor', [0.3010 0.7450 0.9330]);
     hold on;
-    histogram(smaller_buoyancy,'BinWidth', 0.25, 'Normalization', 'pdf','FaceColor', [0 0.4470 0.7410]);
+    histogram(smaller_buoyancy,'BinWidth', 0.2, 'Normalization', 'pdf','FaceColor', [0 0.4470 0.7410]);
     hold on;
-    histogram(small_buoyancy,'BinWidth', 0.25, 'Normalization', 'pdf','FaceColor', [0.4940 0.1840 0.5560]);
+    histogram(small_buoyancy,'BinWidth', 0.2, 'Normalization', 'pdf','FaceColor', [0.4940 0.1840 0.5560]);
     hold on;
-    histogram(big_buoyancy,'BinWidth', 0.25, 'Normalization', 'pdf','FaceColor', [0.9290 0.6940 0.1250]);
+    histogram(big_buoyancy,'BinWidth', 0.2, 'Normalization', 'pdf','FaceColor', [0.9290 0.6940 0.1250]);
     hold on;
-    histogram(bigger_buoyancy,'BinWidth', 0.25, 'Normalization', 'pdf','FaceColor', [0.8500 0.3250 0.0980]);
+    histogram(bigger_buoyancy,'BinWidth', 0.2, 'Normalization', 'pdf','FaceColor', [0.8500 0.3250 0.0980]);
     hold on;
     histogram(biggest_buoyancy,'BinWidth', 0.25,'Normalization', 'pdf', 'FaceColor', "red");
     hold off
